@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" id="app" ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <link rel="stylesheet" href="css/app/init.css">
+    <link rel="stylesheet" href="css/app/layout.css">
+    <link rel="stylesheet" href="css/app/app.css">
+    <link rel="shortcut icon" href="ico/favicon.png">
+    <!--link(rel="apple-touch-icon" href="ico/omnia-144-touchIcon.png")-->
+    <!--link(rel="apple-touch-icon" sizes="60x60" href="ico/omnia-60-touchIcon.png")-->
+    <!--link(rel="apple-touch-icon" sizes="76x76" href="ico/omnia-76-touchIcon.png")-->
+    <!--link(rel="apple-touch-icon" sizes="80x80" href="ico/omnia-80-touchIcon.png")-->
+    <!--link(rel="apple-touch-icon" sizes="120x120" href="ico/omnia-120-touchIcon.png")-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="">
+    <title>Angular image manager module</title>
+    <!-- angular-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+    <!-- lib -->
+    <script src="../src/ng-imago.js"></script>
+    <!-- App-->
+    <script src="js/app.js"></script>
+</head>
+
+<body ng-controller="AppCtrl">
+
+
+    <img
+        ng-imago 
+        
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+    <img  
+        ng-imago="{'portrait':true}"
+        
+        queue-index="2"
+        
+        mobile="http://www.placehold.it/320x400&text=mobile" 
+        tablet="http://www.placehold.it/768x600&text=tablet" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
+
+    <img id="img2"
+        ng-imago
+        
+        auto-load="false"
+        load-group="group3"
+
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+    <img id="img4"
+        
+        ng-imago
+        auto-load="false"
+        
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+    <img
+        ng-imago
+        
+        auto-load="false"
+        queue-index="3"
+        
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+    <img
+        ng-imago
+        
+        auto-load="false"
+        queue-index="3"
+
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+
+     <img
+        ng-imago
+
+        auto-load="true" 
+        queue-index="4"
+
+        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
+        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
+        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+
+    <br>
+    <strong>LOG</strong>
+    <pre>{{logMsg}}</pre>
+
+
+</body>
+
+</html>
