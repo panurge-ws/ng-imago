@@ -4,11 +4,10 @@ An AngularJS module to manage images: responsiveness and loading.
 
 ## Getting Started
 ### On the server
-Install the module with: `npm install ng-imago`
+(coming soon)
 
 ```javascript
-var ng_imago = require('ng-imago');
-ng_imago.awesome(); // "awesome"
+(coming soon)
 ```
 
 ### In the browser
@@ -20,22 +19,13 @@ Download the [production version][min] or the [development version][max].
 In your web page:
 
 ```html
-<script src="dist/ng-imago.min.js"></script>
-<script>
-awesome(); // "awesome"
-</script>
+(coming soon)
 ```
 
 In your code, you can attach ng-imago's methods to any object.
 
 ```html
-<script>
-var exports = Bocoup.utils;
-</script>
-<script src="dist/ng-imago.min.js"></script>
-<script>
-Bocoup.utils.awesome(); // "awesome"
-</script>
+(coming soon)
 ```
 
 ## Documentation
@@ -45,7 +35,7 @@ _(Coming soon)_
 _(Coming soon)_
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+(coming soon)
 
 _Also, please don't edit files in the "dist" subdirectory as they are generated via Grunt. You'll find source code in the "src" subdirectory!_
 
