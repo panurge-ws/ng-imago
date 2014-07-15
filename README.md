@@ -2,15 +2,15 @@
 
 An AngularJS module to manage images: responsiveness and loading. 
 
-## Getting Started
-### On the server
+## COMING SOON
+### This project is under costruction
 (coming soon)
 
 ```javascript
 (coming soon)
 ```
 
-### In the browser
+### Import the module
 Download the [production version][min] or the [development version][max].
 
 [min]: https://raw.github.com/aboschini/ng-imago/master/dist/ng-imago.min.js
