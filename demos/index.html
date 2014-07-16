@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <link rel="stylesheet" href="css/app/init.css">
-    <link rel="stylesheet" href="css/app/layout.css">
-    <link rel="stylesheet" href="css/app/app.css">
     <link rel="shortcut icon" href="ico/favicon.png">
     <!--link(rel="apple-touch-icon" href="ico/omnia-144-touchIcon.png")-->
     <!--link(rel="apple-touch-icon" sizes="60x60" href="ico/omnia-60-touchIcon.png")-->
@@ -19,14 +17,19 @@
     <title>Angular image manager module</title>
     <!-- angular-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
-    <!-- lib -->
+    <!-- ng-imago -->
     <script src="../src/ng-imago.js"></script>
     <!-- App-->
     <script src="js/app.js"></script>
 </head>
 
 <body ng-controller="AppCtrl">
-
+    
+    <h1>ng-imago Demo</h1>
+    
+    <h2>Directive ng-imago</h2>
+    
+    <p> Simple use: set a set of images for different resolutions. The above image will load automatically.</p>
 
     <img
         ng-imago 
@@ -36,8 +39,20 @@
         desktop="http://www.placehold.it/1024x600&text=desktop" 
         xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
 
+    <p> Override default options: pass a JSON object <code> ng-imago="{'portrait':true}"</code> to override the default options of the module (see Defaults in app.js) </p>
+
     <img  
         ng-imago="{'portrait':true}"
+        
+        mobile="http://www.placehold.it/320x400&text=mobile" 
+        tablet="http://www.placehold.it/768x600&text=tablet" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
+
+    <p> Sequential loading: setting the queue-index to a number will cause the image to be loaded after all the images having lower queue-index (or the ones without queue-index). The image above will be loaded after the previous two  </p>
+
+    <img  
+        ng-imago
         
         queue-index="2"
         
@@ -46,26 +61,63 @@
         desktop="http://www.placehold.it/1024x600&text=desktop" 
         xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
 
-    <img id="img2"
+    <p>Delayed loading: you can choose to not load the image automatically with
+        <code>auto-load="false"</code>. You will have to explicit change the attribute or load image via angular function (see Code -> Loading manually).
+        <br>
+        <br>Since you should load the images manually, you can set a
+        <code>load-group="NAME_OF_THE_GROUP"</code>attribute to load all the imges of that group. You should use either queue-index or queue-index.
+        <br><br>
+
+        <input type="submit" ng-click="loadGroup('group3')" value="Click to load the images above with load-group='group3'" />
+    </p>
+
+
+    <img 
         ng-imago
         
         auto-load="false"
         load-group="group3"
 
-        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
-        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
-        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
-        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+        mobile="http://www.placehold.it/320x400&text=mobile-group3" 
+        tablet="http://www.placehold.it/768x600&text=tablet-group3" 
+        desktop="http://www.placehold.it/1024x600&text=desktop-group3" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop-group3" />
+
+    <img 
+        ng-imago
+        
+        auto-load="false"
+        load-group="group3"
+
+        mobile="http://www.placehold.it/320x400&text=mobile-group3" 
+        tablet="http://www.placehold.it/768x600&text=tablet-group3" 
+        desktop="http://www.placehold.it/1024x600&text=desktop-group3" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop-group3" />
+
+
+
+    <p>You can load an image by the id. Notice that you can also pass the url within a ng template.
+        <br><br>
+        <input type="submit" ng-click="loadImageById('img4')" value="Click to load the image with id='img4' " />
+    </p>
 
     <img id="img4"
         
         ng-imago
         auto-load="false"
         
-        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
-        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
-        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
-        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+        mobile="{{url_mobile}}" 
+        tablet="{{url_tablet}}" 
+        desktop="{{url_desktop}}" 
+        xdesktop="{{url_xdesktop}}" />
+
+    <p>You can load an image by the queue-index. {{url_desktop}}
+    <br>Notice that the image with queue-index="4" is not still loaded event tough it has auto-load='true'.
+        Because the queue-index="3" is not still loaded. As you click the button above and the image with queue-index="3" will be loaded, also the image with  queue-index="4" will be loaded.
+
+        <br><br>
+        <input type="submit" ng-click="loadImageByQueueIndex(3)" value="Click to load the image with queue-index='3' " />
+    </p>
 
     <img
         ng-imago
@@ -73,21 +125,10 @@
         auto-load="false"
         queue-index="3"
         
-        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
-        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
-        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
-        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
-
-    <img
-        ng-imago
-        
-        auto-load="false"
-        queue-index="3"
-
-        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
-        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
-        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
-        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+        mobile="http://www.placehold.it/320x400&text=mobile" 
+        tablet="http://www.placehold.it/768x600&text=tablet" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
 
 
      <img
@@ -96,10 +137,25 @@
         auto-load="true" 
         queue-index="4"
 
-        mobile="http://www.placehold.it/320x400&text=mobile, http://www.placehold.it/320x400&text=mobile-@2x" 
-        tablet="http://www.placehold.it/768x600&text=tablet, http://www.placehold.it/768x600&text=tablet-@2x" 
-        desktop="http://www.placehold.it/1024x600&text=desktop, http://www.placehold.it/1024x600&text=desktop-@2x" 
-        xdesktop="http://www.placehold.it/1280x600&text=xdesktop,  http://www.placehold.it/1280x600&text=xdesktop-@2x" />
+        mobile="http://www.placehold.it/320x400&text=mobile" 
+        tablet="http://www.placehold.it/768x600&text=tablet" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
+
+    <p>You can load an image previously settes with auto-load="false" changing the attribute's value.
+        <br><br>
+        <input type="submit" ng-click="loadImageChangingAutoLoad('imgAutoLoad')" value="Click to load the image changing auto-load to true" />
+    </p>
+
+    <img id="imgAutoLoad"
+        ng-imago
+
+        auto-load="false" 
+
+        mobile="http://www.placehold.it/320x400&text=mobile" 
+        tablet="http://www.placehold.it/768x600&text=tablet" 
+        desktop="http://www.placehold.it/1024x600&text=desktop" 
+        xdesktop="http://www.placehold.it/1280x600&text=xdesktop" />
 
     <br>
     <strong>LOG</strong>

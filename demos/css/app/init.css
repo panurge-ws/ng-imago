@@ -1,13 +1,15 @@
 html,body{
 
-	margin:10px;
-	padding:10px;
+	margin:0px;
+	padding:0px;
+
 	width:100%;
 	height:100%;
 	
 }
 
 body{
+	margin:20px;
 	font-size: 16px;
 	background-color:#fff;
 	background-image:none;
@@ -27,6 +29,13 @@ div{
 
 a{
 	
+}
+h3{
+	font-size: 14px;
+}
+code{
+	background-color: #eee;
+	padding:5px;
 }
 pre{
 	font-family: Arial, sans-serif;

@@ -1,4 +1,4 @@
-/*! ng-imago - v0.1.0 - 2014-07-15
+/*! ng-imago - v0.1.0 - 2014-07-16
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
@@ -330,11 +330,7 @@
                         }
                     }
 
-                    //console.log(_options)
-
-                    var _auto_load = $scope.autoLoad === false ? false : true;
-                    var _queue_index = angular.isUndefined(iAttrs.queueIndex) ? -1 : iAttrs.queueIndex;
-                    var _load_group = angular.isUndefined(iAttrs.loadGroup) ? "default" : iAttrs.loadGroup;
+                    var _auto_load, _queue_index, _load_group;
 
                     //console.log(_options.portrait, _load_group, _auto_load);
 
@@ -342,42 +338,54 @@
                         $log.error("[ngImagoModule] -> You can't use ngImagoMng module with 'src' attribute in the <img> tag. Remove src='" + iAttrs.src + "'");
                     }
 
-                    function init() {
-
+                    function calcUrl()
+                    {
                         _url_to_set = ngImagoAttributeParser.getUrlForAttrs(iAttrs, _options);
-
+                        
+                        //console.log("_url_to_set",_url_to_set)
                         if (_url_to_set === "") {
                             $log.error("[ngImagoModule] -> no-url-for-image", iAttrs);
-                            return;
+                            return false;
                         }
-
+                        
                         if (_loading_url === _url_to_set) {
+                            return false;
+                        }
+
+                        return _url_to_set;
+                    }
+
+                    function init() {
+
+                        _initialize = true;
+                        
+                        _auto_load = iAttrs.autoLoad === "false" ? false : true;
+                        _queue_index = angular.isUndefined(iAttrs.queueIndex) ? -1 : Number(iAttrs.queueIndex);
+                        _load_group = angular.isUndefined(iAttrs.loadGroup) ? "" : iAttrs.loadGroup;
+
+
+                        if (calcUrl() === false){
                             return;
                         }
 
-                        if (_loading_url !== "") {
-                            ngImagoService.remove({
+                        if (_load_group === ""){
+                            ngImagoService.add({
                                 index: _queue_index,
-                                url: _loading_url
+                                url: _url_to_set
                             });
                         }
 
-                        ngImagoService.add({
-                            index: _queue_index,
-                            url: _url_to_set
-                        });
-
-                        _loading_url = _url_to_set;
-
                         if (_queue_index === -1 && _auto_load === true) {
+
                             startLoadImage(false, _auto_load);
+
                         } else if (_queue_index > -1 || _auto_load === false) {
 
                             $rootScope.$on(EVENT_IMG_LOAD_REQUEST, onLoadImgRequest);
 
                         }
 
-                        _initialize = true;
+                        
                     }
 
                     function onLoadImgRequest(ev, data, type) {
@@ -450,14 +458,8 @@
                     function startLoadImage(recalcURL, forceLoad) {
 
                         if (recalcURL === true) {
-                            _url_to_set = ngImagoAttributeParser.getUrlForAttrs(iAttrs, _options);
-
-                            if (_url_to_set === "") {
-                                $log.error("[ngImagoModule] -> no-url-for-image", iAttrs);
-                                return;
-                            }
-
-                            if (_loading_url === _url_to_set) {
+                            
+                            if (calcUrl() === false){
                                 return;
                             }
                         }
@@ -479,7 +481,6 @@
 
                         _loaded = false;
 
-                        //console.log("_url_to_set", _url_to_set);
                         imageSetSource(_image, _options.force_redownload, _url_to_set);
 
                     }
@@ -493,13 +494,37 @@
                     }
 
                     $rootScope.$on(EVENT_WINDOW_RESIZE, function() {
+
                         if (_initialize) {
                             startLoadImage(true, (_auto_load || _loaded)); // TODO params
                         }
+
                     });
 
                     $scope.$watch(function() {
-                        return [iElement.attr('mobile'), iElement.attr('tablet'), iElement.attr('desktop'), iElement.attr('xdesktop'), iElement.attr('queue-index')];
+                        return [iElement.attr('auto-load'),iElement.attr('queue-index')];
+                    }, function(nv, ov) {
+
+                        if (_initialize) {
+                            
+                            iAttrs.autoLoad = nv[0];
+                            iAttrs.queueIndex = nv[1];
+                            // TODO remove from queue old url
+                            init();
+                        } 
+                    }, true);
+
+                    /*iAttrs.$observe('desktop',function(val){
+                        console.log('$observe-desktop',val)
+                    });
+
+                    $scope.$watch("desktop",function(val) {
+                        console.log('$watch-desktop',val)
+                    },true);*/
+
+
+                    $scope.$watch(function() {
+                        return [iElement.attr('mobile'), iElement.attr('tablet'), iElement.attr('desktop'), iElement.attr('xdesktop')];
                     }, function(nv, ov) {
                         if (_initialize) {
                             //console.log(nv);
@@ -507,7 +532,6 @@
                             iAttrs.tablet = nv[1];
                             iAttrs.desktop = nv[2];
                             iAttrs.xdesktop = nv[3];
-                            iAttrs.queueIndex = nv[4];
                             // TODO remove from queue old url
                             startLoadImage(true, _auto_load);
                         } else {
