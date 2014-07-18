@@ -1,36 +1,28 @@
 // NG app init
 var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     
+    // configuring defaults option and sizez
     function(ngImagoProvider) {
+
     	console.log(ngImagoProvider.defaults());
 
-    	ngImagoProvider.addDefaultSize('custom',720);
-    	ngImagoProvider.addDefaultSize('custom2',720);
-    	ngImagoProvider.removeDefaultSize('custom2');
+    	// add a custum size: you can add in the image tag the attribute "custom"
+    	// to load image when resolution min-width = 2500
+    	ngImagoProvider.addDefaultSize('custom', 720);
+
     }
- ]);
-
-app.value('ciccio', "lui");
-
-app.factory('apiToken', ['ciccio', function apiTokenFactory(ciccio) {
-  
-
-  return ciccio + " è lui";
-}]);
+]);
 
 
-app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService', 'apiToken', function ($scope, $timeout, $rootScope, ngImagoService, apiToken) {
+app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService', function ($scope, $timeout, $rootScope, ngImagoService, apiToken) {
 		
 		$scope.logMsg = "";
 
-
-
+		// same url to bind to the atttributes
 		$scope.url_small = "http://www.placehold.it/320x100&text=small";
 		$scope.url_medium = "http://www.placehold.it/400x100&text=medium";
 		$scope.url_large = "http://www.placehold.it/500x100&text=large";
 		$scope.url_xlarge = "http://www.placehold.it/600x100&text=xlarge";
-
-		
 
 		$scope.loadImageById = function(imageId)
 		{
@@ -55,15 +47,6 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 			var img = document.getElementById(imageId);
 			
 			angular.element(img).attr('auto-load',"true");
-
-			$timeout(function(){
-				$scope.url_small = "http://www.placehold.it/1024x600&text=small-loaded-after";
-				$scope.url_medium = "http://www.placehold.it/1024x600&text=later-loaded-after";
-				$scope.url_large = "http://www.placehold.it/1024x600&text=large-loaded-after";
-				$scope.$digest();
-				ngImagoService.loadImageById(imageId);
-			}, 4000)
-			
 
 		}
 

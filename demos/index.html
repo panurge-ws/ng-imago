@@ -28,191 +28,227 @@
     <h1>ng-imago Demo</h1>
     
     <h2>Responsive resources</h2>
-    
+    <h3>Set resources for different resolutions</h3>
+
     <p>Simple use: a set of images sources for different resolutions. The above image will load automatically.</p>
-    <pre>&lt;img  ng-imago 
+    <pre>
+    &lt;img  
+            ng-imago 
             
-            small="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-@2x" 
-            medium="http://www.placehold.it/420x100&text=medium, http://www.placehold.it/420x200&text=medium-@2x" 
-            large="http://www.placehold.it/620x100&text=large, http://www.placehold.it/420x200&text=large-@2x" 
-            xlarge="http://www.placehold.it/720x100&text=xlarge,  http://www.placehold.it/720x200&text=xlarge-@2x"
+            <strong>small</strong>="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-<strong>@2x</strong>" 
+            <strong>medium</strong>="http://www.placehold.it/420x100&text=medium, http://www.placehold.it/420x200&text=medium-<strong>@2x</strong>" 
+            <strong>large</strong>="http://www.placehold.it/620x100&text=large, http://www.placehold.it/420x200&text=large-<strong>@2x</strong>" 
+            <strong>xlarge</strong>="http://www.placehold.it/720x100&text=xlarge,  http://www.placehold.it/720x200&text=xlarge-<strong>@2x</strong>"
             
-            custom="http://www.placehold.it/5204x100&text=custom" /&gt;</pre>
+            <strong>custom</strong>="http://www.placehold.it/5204x100&text=custom" /&gt;</pre>
     <img
             ng-imago 
             
-            small="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-@2x" 
-            medium="http://www.placehold.it/420x100&text=medium, http://www.placehold.it/420x200&text=medium-@2x" 
+            small="http://www.placehold.it/320x100&text=small,http://www.placehold.it/320x200&text=small-@2x" 
+            medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x" 
              
-            large="http://www.placehold.it/620x100&text=large1, http://www.placehold.it/420x200&text=large-@2x" 
-            xlarge="http://www.placehold.it/720x100&text=xlarge,  http://www.placehold.it/720x200&text=xlarge-@2x"
+            large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
+            xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
             
             custom="http://www.placehold.it/5204x100&text=custom" />
   
-
-    <p> Override default options: pass a JSON object to override the default options of the module (see Defaults).</p>
+    <h3>Override default options</h3>
+    <p>Pass a JSON object to override the default options of the module (see Defaults).</p>
     <pre>
-    &lt;img ng-imago="{'portrait':false, small:480, medium:700}"
+    &lt;img 
+            <strong>ng-imago="{'portrait':false, small:480, medium:700}"</strong>
             
             small="{{url_small}}" 
             medium="{{url_medium}}" 
             large="{{url_small}}" 
-            xlarge="{{url_xlarge}}" /&gt;
+            xlarge="{{url_xlarge}}" 
+            /&gt;
 
     </pre>
-    
+    <img 
+            ng-imago="{'portrait':false, small:480, medium:700}"
+            
+            small="{{url_small}}-override" 
+            medium="{{url_medium}}-override" 
+            large="{{url_small}}-override" 
+            xlarge="{{url_xlarge}}-override" 
+            />
+
 
     
     <h2>Sequential loading</h2>
-
-    <p> Sequential loading: setting the queue-index to a number will cause the image to be loaded after all the images having lower queue-index (or the ones without queue-index). The image above will be loaded after the previous two  </p>
-
+    <h3>Queue index</h3>
+    <p>Setting the queue-index with a number will cause the image to be loaded after all the images having lower queue-index (or the ones without queue-index). The image above will be loaded after the previous two  </p>
+    <pre>
+    &lt;img  
+            ng-imago <strong>queue-index="1"</strong>
+            
+            medium="{{url_medium}}" 
+            large="{{url_large}}" 
+            /&gt;
+    </pre>
     <img  
-        ng-imago
+        ng-imago queue-index="1"
         
-        queue-index="1"
-        
-        small="{{url_small}}" 
-        medium="{{url_medium}}" 
-        large="{{url_large}}" 
-        xlarge="{{url_xlarge}}" />
+        medium="{{url_medium}}-qi1" 
+        large="{{url_large}}-qi1" 
+        />
 
-    <p>Delayed loading: you can choose to not load the image automatically with
-        <code>auto-load="false"</code>. You will have to explicit change the attribute or load image via ngImagoService function (see Code -> Loading manually).
+    <h3>Delayed/Manual loading: loading by attribute</h3>
+    <p>You can choose to not load the image automatically with
+        <i>auto-load="false"</i>. You will have to explicit change the attribute or load image via ngImagoService function (see Code -> Loading manually).
         <br>
         <br>Since you should load the images manually, you can set a
-        <code>load-group="NAME_OF_THE_GROUP"</code>attribute to load all the imges of that group.
+        <i>load-group="NAME_OF_THE_GROUP"</i>attribute to load all the imges of that group.
         <br><br>
 
         <input type="submit" ng-click="loadImageByAttr('load-group','group3')" value="Click to load the images above with load-group='group3'" />
     </p>
 
-
-    <img 
-        ng-imago imago-resize
-        
-        auto-load="false"
+    <pre>
+    &lt;img 
+        ng-imago <strong>auto-load="false"</strong>
         queue-index="0"
-        load-group="group3"
+        <strong>load-group="group3"</strong>
 
-        small="{{url_small}}-group3" 
-        medium="{{url_medium}}-group3" 
-        large="{{url_large}}-group3" 
-        xlarge="{{url_xlarge}}-group3" />
+        large="{{url_large}}-group3" /&gt;
 
-    <img 
-        ng-imago
-        
-        auto-load="false"
+    &lt;img 
+        ng-imago auto-load="false"
         queue-index="1"
         load-group="group3"
 
-        small="{{url_small}}-group32" 
-        medium="{{url_medium}}-group32" 
-        large="{{url_large}}-group32" 
-        xlarge="{{url_xlarge}}-group32" />
+        large="{{url_large}}-group32" /&gt;
+    </pre>
+
+    <img 
+        ng-imago auto-load="false"
+        queue-index="0"
+        load-group="group3"
+
+        large="{{url_large}}-group3" 
+        />
+
+    <img 
+        ng-imago auto-load="false"
+        queue-index="1"
+        load-group="group3"
+
+        large="{{url_large}}-group32"  />
 
 
-
+    <h3>Delayed/Manual: loading by id</h3>
     <p>You can load an image by the id. Notice that you can also pass the url within a ng template.
         <br><br>
         <input type="submit" ng-click="loadImageById('img4')" value="Click to load the image with id='img4' " />
     </p>
 
-    <img id="img4"
-        
+    <pre>
+    &lt;img id="img4"
         ng-imago
         auto-load="false"
         
-        small="{{url_small}}" 
-        medium="{{url_medium}}" 
-        large="{{url_large}}" 
-        xlarge="{{url_xlarge}}" />
+        medium="{{url_medium}}"  
+        /&gt;
+    </pre>
 
-    <p>You can load an image by the queue-index. {{url_large}}
-    <br>Notice that the image with queue-index="4" is not still loaded event tough it has auto-load='true'.
-        Because the queue-index="3" is not still loaded. As you click the button above and the image with queue-index="3" will be loaded, also the image with  queue-index="4" will be loaded.
+    <img id="img4"
+        ng-imago
+        auto-load="false"
+        
+        medium="{{url_medium}}"  
+        />
 
+    <p>You can load an image by the queue-index (if auto-load=false).
         <br><br>
-        <input type="submit" ng-click="loadImageByQueueIndex(4)" value="Click to load the image with queue-index='4' " />
+        <input type="submit" ng-click="loadImageByQueueIndex(10)" value="Click to load the image with queue-index='10' " />
     </p>
+
+    <pre>
+    &lt;img
+        ng-imago
+        
+        auto-load="false"
+        queue-index="10"
+        
+        small="{{url_small}}-q-index=10" 
+        medium="{{url_medium}}-q-index=10"
+        /&gt;
+    </pre>
 
     <img
         ng-imago
         
-        auto-load="true"
-        queue-index="3"
+        auto-load="false"
+        queue-index="10"
         
-        small="{{url_small}}-q-index=3" 
-        medium="{{url_medium}}-q-index=3" 
-        large="{{url_large}}-q-index=3" 
-        xlarge="{{url_xlarge}}-q-index=3" />
-
-
-     <img
-        ng-imago
-
-        auto-load="false" 
-        queue-index="4"
-
-        small="{{url_small}}q-index=4" 
-        medium="{{url_medium}}q-index4" 
-        large="{{url_large}}q-index4" 
-        xlarge="{{url_xlarge}}q-index4" />
+        small="{{url_small}}-q-index=10" 
+        medium="{{url_medium}}-q-index=10"
+        />
 
     <p>You can load an image previously settes with auto-load="false" changing the auto-load attribute's value.
         <br><br>
         <input type="submit" ng-click="loadImageChangingAutoLoad('imgAutoLoad')" value="Click to load the image changing auto-load to true" />
     </p>
 
+    <pre>
+    &lt;img id="imgAutoLoad"
+        ng-imago
+
+        auto-load="false" 
+
+        medium="{{url_medium}}"
+        /&gt;
+    </pre>
+
     <img id="imgAutoLoad"
         ng-imago
 
         auto-load="false" 
 
-        small="{{url_small}}" 
-        medium="{{url_medium}}" 
-        large="{{url_large}}" 
-        xlarge="{{url_xlarge}}" />
+        medium="{{url_medium}}"  />
 
 
     <p>You can load an image by the class name.
         <br><br>
-        <input type="submit" ng-click="loadImageByClass('imago_rocks')" value="Click to load the image by class" />
+        <input type="submit" ng-click="loadImageByClass('ng_imago_rocks')" value="Click to load the image by class" />
     </p>
+
+    <pre>
+    &lt;img ng-imago class="imago_rocks"
+        auto-load="false" 
+        large="{{url_large}}" 
+        /&gt;
+    </pre>
 
     <img ng-imago 
 
-        class="imago_rocks"
+        class="ng_imago_rocks"
         auto-load="false" 
 
-        small="{{url_small}}" 
-        medium="{{url_medium}}" 
         large="{{url_large}}" 
-        xlarge="{{url_xlarge}}" />
+        />
 
     <h2>Resizing</h2>
 
-    <div>To resize the image to his parent, you can use another directive called "imago-resize" passing some options.
+    <p>To resize the image to his parent, you can use another directive called "imago-resize" passing some options.
         <br>If the image has a position absolute or fixed, it will be moved with top an left, otherwise with 'margin-top' and 'margin-left'.
-        <br><code>&lt;img ng-imago medium="{{url_medium}}"
+        <br><br>
+        <input type="submit" ng-click="loadImageByClass('imag_to_resize')" value="Click to load the image to resize" />
+    </p>
+    <pre>
+    &lt;img ng-imago medium="{{url_medium}}"
                 auto-load="false" 
                 class="imag_to_resize" 
                 imago-resize="{scale:'fit', center:false, container:'window'}"  
-        /&gt;</code>
-        <br><br>
-        <input type="submit" ng-click="loadImageByClass('imag_to_resize')" value="Click to load the image to resize" />
-
+        /&gt;
+    </pre>
         <img ng-imago medium="{{url_medium}}"
                 auto-load="false" 
                 class="imag_to_resize" 
                 imago-resize="{scale:'fit', center:false, container:'window'}"  
         />
-    </div>
-
-
     
-
     <br>
     <strong>LOG</strong><br>
     <textarea ng-model="logMsg"></textarea>
