@@ -1,15 +1,15 @@
-html,body{
-
-	margin:0px;
+html{
 	padding:0px;
-
 	width:100%;
-	height:100%;
-	
+	overflow-x:hidden;
 }
 
 body{
-	margin:20px;
+	padding:0px;
+	margin:50px 50px;
+	overflow-x:hidden;
+	overflow-y:scroll;
+
 	font-size: 16px;
 	background-color:#fff;
 	background-image:none;
@@ -21,6 +21,8 @@ body{
 	-webkit-text-size-adjust:none;
 
 	font-family: Arial, sans-serif;
+
+
 }
 
 div{
@@ -34,16 +36,31 @@ h3{
 	font-size: 14px;
 }
 code{
+	width:100%;
+	max-height: 250px;
+	overflow: scroll;
+	display: block;
+	font-family: Arial, sans-serif;
 	background-color: #eee;
-	padding:5px;
+	padding:20px;
 }
 pre{
+	width:100%;
+	max-height: 250px;
+	overflow: scroll;
+	display: block;
 	font-family: Arial, sans-serif;
-	font-size: 12px;
+	background-color: #eee;
+	padding:20px;
+}
+textarea{
+	width:400px;
+	height:300px;
+	color:#000;
 }
 
 img{
-	max-width: 200px;
+	
 }
 img.ng-img-loading{
 	background-color: yellow;
