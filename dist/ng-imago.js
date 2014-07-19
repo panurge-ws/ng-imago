@@ -1,9 +1,10 @@
-/*! ng-imago - v0.1.0 - 2014-07-18
+/*! ng-imago - v0.1.0 - 2014-07-19
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
 /*global jQuery */
 /*global console */
+/*global matchMedia */
 /*global $ */
 (function(angular, undefined) {
 
@@ -12,7 +13,7 @@
     // @private
     // defaults
     var default_settings = {
-        portrait: false,
+        portrait: true,
         portrait_suffix: "-portrait",
         avoid_cache: true,
         unbind_when_loaded: true,
@@ -39,12 +40,9 @@
         min_width: 1281
     }];
 
-
-    // internal
-    var resize_initialized = false,
-        window_w = 0,
-        window_h = 0,
-        is_portrait = false;
+    if (angular.isUndefined(matchMedia)) {
+        throw "matchMedia does not exist. Please use a polyfill";
+    }
 
     // Events
     var EVENT_IMG_LOADED = "$ngImagoImageLoaded",
@@ -56,6 +54,35 @@
         EVENT_WINDOW_RESIZE = "$ngImagoWindowResize";
 
     var ngImagoModule = angular.module('ngImago', []);
+
+    ngImagoModule.value('defaultSizes', [
+
+        {
+            attr: 'small',
+            query: 'only screen and (max-width: 480px)'
+        }, {
+            attr: 'medium',
+            query: 'only screen and (min-width:481px) and (max-width: 768px)'
+        }, {
+            attr: 'large',
+            query: 'only screen and (min-width:769px) and (max-width: 1280px)'
+        }, {
+            attr: 'xlarge',
+            query: 'only screen and (min-width:1281px)'
+        }
+    ]);
+
+    ngImagoModule.value('utilsQueries', {
+        'retina': 'only screen and (-webkit-min-device-pixel-ratio: 2), ' +
+            'only screen and (min--moz-device-pixel-ratio: 2), ' +
+            'only screen and (-o-min-device-pixel-ratio: 2/1), ' +
+            'only screen and (min-device-pixel-ratio: 2), ' +
+            'only screen and (min-resolution: 192dpi), ' +
+            'only screen and (min-resolution: 2dppx)',
+        'portrait': 'only screen and (orientation: portrait)',
+        'default': 'only screen and (min-width: 1px)'
+
+    });
 
     ngImagoModule.provider('ngImago', [
 
@@ -90,10 +117,19 @@
 
             };
 
+            this.changeDefaultSize = function(attr, min_width) {
+                for (var i = default_sizes.length - 1; i >= 0; i--) {
+                    if (default_sizes[i].attr === attr) {
+                        default_sizes[i].attr = min_width;
+                    }
+                }
+            };
+
             this.removeDefaultSize = function(attr) {
                 for (var i = default_sizes.length - 1; i >= 0; i--) {
                     if (default_sizes[i].attr === attr) {
                         default_sizes.splice(i, 1);
+                        break;
                     }
                 }
             };
@@ -103,77 +139,157 @@
         }
     ]);
 
-    ngImagoModule.service('ngImagoAttributeParser', ["$window",
+    ngImagoModule.service('ngImagoAttributeParser', ["$window", "$log", "$rootScope", "defaultSizes", "utilsQueries",
 
-        function($window) {
+        function($window, $log, $rootScope, defaultSizes, utilsQueries) {
 
             var ngImagoAttributeParser = {};
 
+            ngImagoAttributeParser.listeners = [];
+            ngImagoAttributeParser.mediaQueries = [];
 
-            ngImagoAttributeParser.pixelRatio = $window.devicePixelRatio ? $window.devicePixelRatio : 1;
+
+            ngImagoAttributeParser.calculateUrl = function(attrs, options) {
+
+
+                var source = ngImagoAttributeParser.getUrlForAttrs(attrs, options);
+
+                if (source === "") {
+                    $log.error("[ngImagoModule] -> no-url-for-image", attrs);
+                    return false;
+                }
+
+                return source;
+            };
 
             ngImagoAttributeParser.getUrlForAttrs = function(attrs, options) {
+                
+
+                var attrMatching = null,
+                    defaultAttr = null;
 
 
-                var _sizes = [];
+                for (var attr in attrs) {
 
-                for (var i = 0; i < default_sizes.length; i++) {
+                    if (!angular.isUndefined(attr) && !angular.isUndefined(attrs[attr])) {
 
-                    var minWidth = getSetting(default_sizes[i].attr, options) ? getSetting(default_sizes[i].attr, options) : default_sizes[i].min_width;
-                    _sizes.push({
-                        size: default_sizes[i].attr,
-                        min_width: minWidth
-                    });
-                }
+                        var attrClean = attr.replace('Portrait', '');
+                        var searchPortrait = attr.indexOf("Portrait") > -1;
 
-                var _images = [];
+                        var requestQuerySet = _getQuerySetByAttr(attrClean);
 
-                for (i = 0; i < _sizes.length; i++) {
-                    if (!angular.isUndefined(attrs[_sizes[i].size])) {
-                        _images.push({
-                            url: attrs[_sizes[i].size],
-                            min_width: _sizes[i].min_width
-                        });
-                    }
-                }
+                        if (requestQuerySet != null) {
+                            var query = "";
+                            if (!angular.isUndefined(options[attr])){
+                                query = options[attr];
+                            }
+                            else{
+                                query = requestQuerySet.query;
+                            }
+                            console.log(query);
+                            var mediaQueryRequested = _mediaQueryExists(query);
 
-                if (_images.length > 0) {
+                            if (mediaQueryRequested === false) {
+                                mediaQueryRequested = _addMediaQuery(query);
+                                //console.log(attr, mediaQueryRequested)
+                            }
 
-                    // sort by min_width
-                    _images = _images.sort(function(a, b) {
-                        return a.min_width - b.min_width;
-                    });
+                            if (searchPortrait) {
 
-                    var _outUrl = "";
-                    _outUrl = ngImagoAttributeParser.parseUrl(_images[_images.length - 1].url, attrs, options); // set the larger available
+                                if (mediaQueryRequested.matches && ngImagoAttributeParser.portraitQuery.matches) {
+                                    attrMatching = attrs[attr];
+                                } else if (attrMatching == null) {
+                                    defaultAttr = attrs[attr];
+                                }
+                            } else {
+                                if (mediaQueryRequested.matches) {
+                                    attrMatching = attrs[attr];
+                                } else if (attrMatching == null) {
+                                    defaultAttr = attrs[attr];
+                                }
+                            }
 
-                    // loop to find if there is a smaller image to load
-                    for (i = 0; i < _images.length; i++) {
-                        if (window_w <= _images[i].min_width) {
-                            _outUrl = ngImagoAttributeParser.parseUrl(_images[i].url, attrs, options);
-                            break;
                         }
                     }
 
-                    _sizes = null;
-                    _images  = null;
+                }
 
-                    return _outUrl;
 
-                } else {
+                if (attrMatching === null && defaultAttr !== null) {
+                    attrMatching = defaultAttr;
+                }
+
+
+                if (attrMatching === null || angular.isUndefined(attrMatching)) {
                     return "";
+                } else {
+                    return ngImagoAttributeParser.parseAttr(attrMatching, attrs, options);
                 }
             };
 
-            ngImagoAttributeParser.parseUrl = function(imageUrl, attrs, options) {
+            ngImagoAttributeParser.mediaQueryHandler = function(mq) {
+                if (mq.matches || mq.media.indexOf('portrait') > -1){
+                    $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
+                }
+
+            };
+
+            var _addMediaQuery = function(query) {
+                var mq = matchMedia(query);
+                mq.addListener(ngImagoAttributeParser.mediaQueryHandler);
+                ngImagoAttributeParser.mediaQueries[query] = mq;
+                return ngImagoAttributeParser.mediaQueries[query];
+            };
+
+            var _removeMediaQuery = function(query) {
+
+            };
+
+            var _mediaQueryExists = function(query) {
+                if (angular.isUndefined(ngImagoAttributeParser.mediaQueries[query])) {
+                    return false;
+                } else {
+                    return ngImagoAttributeParser.mediaQueries[query];
+                }
+            };
+
+            var _listenerExists = function(query) {
+                if (angular.isUndefined(ngImagoAttributeParser.listeners[query])) {
+                    return false;
+                } else {
+                    return ngImagoAttributeParser.listeners[query];
+                }
+            };
+
+            var _getQuerySetByAttr = function(attr) {
+                for (var i = 0; i < defaultSizes.length; i++) {
+                    if (defaultSizes[i].attr === attr){
+                        return defaultSizes[i];
+                    }
+                }
+                return null;
+            };
+
+            var _getQuerySetByQuery = function(query) {
+                for (var i = 0; i < defaultSizes.length; i++) {
+                    if (defaultSizes[i].query === query){
+                        return defaultSizes[i];
+                    }
+                }
+                return null;
+            };
+
+
+
+            ngImagoAttributeParser.parseAttr = function(imageUrl, attrs, options) {
                 var _outUrl = "";
 
                 if (imageUrl.indexOf(",") > -1) {
                     var _images_split = imageUrl.split(",");
                     angular.forEach(_images_split, function(img) {
-                        if (ngImagoAttributeParser.pixelRatio > 1 && img.indexOf('@2x') > -1) {
+                        if (ngImagoAttributeParser.isRetina === true && img.indexOf('@2x') > -1) {
                             _outUrl = img;
-                        } else if (ngImagoAttributeParser.pixelRatio === 1) {
+                        } else if (ngImagoAttributeParser.isRetina === false) {
                             _outUrl = img;
                         }
                     });
@@ -181,14 +297,18 @@
                     _outUrl = imageUrl;
                 }
 
-                if (is_portrait && options && getSetting('portrait', options) === true) {
+                /*if (ngImagoAttributeParser.portraitQuery.matches && getSetting('portrait', options) === true) {
                     var ext = _outUrl.substr(_outUrl.lastIndexOf('.'));
                     var path = _outUrl.substr(0, _outUrl.lastIndexOf('.'));
                     _outUrl = path + getSetting('portrait_suffix', options) + ext;
-                }
+                }*/
 
                 return _outUrl;
             };
+            // set utils
+            ngImagoAttributeParser.isRetina = matchMedia(utilsQueries.retina).matches;
+            ngImagoAttributeParser.portraitQuery = _addMediaQuery(utilsQueries.portrait);
+            ngImagoAttributeParser.defaultQuery = _addMediaQuery(utilsQueries.default);
 
             return ngImagoAttributeParser;
         }
@@ -205,9 +325,9 @@
             ngImagoService.perc = 0;
             ngImagoService.perc_items = 0;
 
-            $rootScope.$on(EVENT_IMG_LOADED, function(event, data) {
+            $rootScope.$on(EVENT_IMG_LOADED, function(event, data, element) {
 
-                ngImagoService.remove(data);
+                ngImagoService.remove(data, element);
             });
 
             $rootScope.$on(EVENT_IMG_ERROR, function(event, data) {
@@ -261,13 +381,11 @@
                     ngImagoService.queue.push(indexGroup);
                 }
 
-                //console.log("add", ngImagoService.queue, obj);
-
                 if (ngImagoService.itemExists(indexGroup.items, obj)) {
                     return;
                 }
 
-                console.log("add", obj.url);
+                //console.log("add", obj.url);
 
                 indexGroup.items.push(obj);
 
@@ -301,7 +419,7 @@
                 if (dict === null) {
                     var indexGroup = ngImagoService.indexExists(obj.index);
                     if (indexGroup && indexGroup.items && indexGroup.items.length > 0) {
-                       dict = indexGroup.items;
+                        dict = indexGroup.items;
                     }
                 }
 
@@ -337,9 +455,8 @@
                 return false;
             };
 
-            ngImagoService.remove = function(obj) {
+            ngImagoService.remove = function(obj, element) {
 
-                console.log("remove0");
 
                 if (angular.isUndefined(obj)) {
                     return;
@@ -349,10 +466,10 @@
 
                 var indexGroup = ngImagoService.indexExists(obj.index);
 
-                console.log("remove1",ngImagoService.queue.length, indexGroup, indexGroup.items.length, obj.url);
+                //console.log("remove1",ngImagoService.queue.length, indexGroup, indexGroup.items.length, obj.url);
 
                 var item = ngImagoService.itemExists(indexGroup.items, obj, true);
-                
+
 
                 //console.log("remove2",ngImagoService.queue.length, indexGroup, indexGroup.items.length, obj.url);
 
@@ -363,7 +480,7 @@
 
                     ngImagoService.removeQueueIndex(indexGroup.index);
 
-                    $rootScope.$broadcast(EVENT_IMG_QUEUE_INDEX_COMPLETE, ngImagoService.currIndex);
+                    $rootScope.$broadcast(EVENT_IMG_QUEUE_INDEX_COMPLETE, thisIndex, obj, element);
 
                     // reaching the next available loading index in the queue
                     // we could have 0... 1... 4 
@@ -375,7 +492,7 @@
                     }
 
                     if (ngImagoService.queue.length === 0) {
-                        $rootScope.$broadcast(EVENT_IMG_QUEUE_COMPLETE, thisIndex);
+                        $rootScope.$broadcast(EVENT_IMG_QUEUE_COMPLETE, thisIndex, obj, element);
                     } else {
                         $rootScope.$broadcast(EVENT_IMG_LOAD_REQUEST, {
                             type: "index",
@@ -405,19 +522,24 @@
                 restrict: 'A',
                 controller: function($scope, $element, $attrs, $transclude) {
 
+                    // flags
                     $scope.loaded = false;
+                    $scope.initialized = false;
+                    // this is the actual value of the "src" attribute
+                    // $scope.options.source_to_set is the promised value of the same attribute
                     $scope.source = "";
+                    // an object with options passed to ng-imago=""; 
+                    // it's used to override default options
                     $scope.options = {};
-
-                    var _initialize = false;
 
                     var _request_load_listener, _watch_attrs_fn, _watch_resp_fn;
 
+                    // check if src is empty
                     if (!angular.isUndefined($attrs.src)) {
                         $log.error("[ngImagoModule] -> You can't use ngImagoMng module with 'src' attribute in the <img> tag. Remove src='" + $attrs.src + "'");
                     }
 
-                    // shortcut 
+                    // shortcut fns 
                     function _getSetting(key) {
                         return getSetting(key, $scope.options);
                     }
@@ -447,6 +569,7 @@
 
                         if ($scope.options && $scope.options.source_to_set && $scope.options.source_to_set !== "") {
 
+                            // remove from the queue if a url was added before
                             ngImagoService.itemExists(null, {
                                 index: $scope.options.queue_index,
                                 url: $scope.options.source_to_set
@@ -456,13 +579,18 @@
 
                         setOptions();
 
-                        _initialize = true;
+                        $scope.initialized = true;
 
                         $scope.options.auto_load = $attrs.autoLoad === "false" ? false : true;
+
                         $scope.options.queue_index = angular.isUndefined($attrs.queueIndex) ? 0 : Number($attrs.queueIndex);
+                        $scope.options.source_to_set = ngImagoAttributeParser.calculateUrl($attrs, $scope.options);
 
-
-                        if (calcUrl() === false) {
+                        if ($scope.options.source_to_set === false) { // no resource has been found
+                            return;
+                        }
+                        // avoid reset the same src
+                        if ($scope.source === $scope.options.source_to_set) {
                             return;
                         }
 
@@ -520,6 +648,7 @@
                         var objToQueue = {
                             index: $scope.options.queue_index,
                             url: $scope.options.source_to_set
+
                         };
 
                         if (($scope.options.auto_load && canLoadIndex) ||
@@ -535,7 +664,7 @@
                             ngImagoService.add(objToQueue);
                         }
 
-                        console.log("onLoadImgRequest", canLoad, canLoadIndex, canQueue, data, $scope.options);
+                        //console.log("onLoadImgRequest", canLoad, canLoadIndex, canQueue, data, $scope.options);
 
                         if (canLoad) {
                             startLoadImage(false, true);
@@ -557,8 +686,9 @@
                         // we go on with the queue even tough error to avoid blocking other images
                         $rootScope.$broadcast(EVENT_IMG_ERROR, {
                             url: $scope.options.source_to_set,
-                            index: $scope.options.queue_index,
-                            elem: $element
+                            index: $scope.options.queue_index
+
+
                         });
 
                         $scope.$digest();
@@ -578,13 +708,14 @@
                         if ($scope.options.unbind_when_loaded && _request_load_listener) {
                             _request_load_listener();
                             _watch_attrs_fn();
+                            //_watch_resp_fn();
                         }
 
 
                         $rootScope.$broadcast(EVENT_IMG_LOADED, {
                             url: $scope.options.source_to_set,
-                            index: $scope.options.queue_index
-                        });
+                            index: $scope.options.queue_index,
+                        }, $element);
 
                         $scope.$digest();
                     };
@@ -622,6 +753,7 @@
                     }
 
                     function imageSetSource(image, source_to_set, avoid_cache) {
+
                         if (avoid_cache) {
                             image.attr("src", source_to_set + "?c=" + Math.round(Math.random() * 100000));
                         } else {
@@ -631,7 +763,7 @@
 
                     $rootScope.$on(EVENT_WINDOW_RESIZE, function() {
 
-                        if (_initialize) {
+                        if ($scope.initialized) {
                             startLoadImage(true, ($scope.options.auto_load || $scope.loaded)); // TODO params
                         }
 
@@ -641,12 +773,11 @@
                         return [$element.attr('auto-load'), $element.attr('queue-index')];
                     }, function(nv, ov) {
 
-                        if (_initialize) {
+                        if ($scope.initialized) {
 
                             $attrs.autoLoad = nv[0];
                             $attrs.queueIndex = nv[1];
-                            // TODO remove from queue old url
-                            //console.log("_watch_attrs_fn", $attrs)
+
                             init();
                         }
                     }, true);
@@ -662,12 +793,12 @@
                         return listenerAttr;
 
                     }, function(nv, ov) {
-                        if (_initialize) {
-                            
+                        if ($scope.initialized) {
+
                             for (var i = 0; i < default_sizes.length; i++) {
                                 $attrs[default_sizes[i].attr] = nv[i];
                             }
-                            
+
                             // TODO remove from queue old url
                             startLoadImage(true, $scope.options.auto_load || $scope.loaded);
 
@@ -676,24 +807,6 @@
                             init();
                         }
                     }, true);
-
-
-                    // add listener only once
-                    if (!resize_initialized) {
-                        window_w = $window.innerWidth;
-                        window_h = $window.innerHeight;
-                        is_portrait = window_h > window_w;
-
-                        $window.onresize = function() {
-                            window_w = $window.innerWidth;
-                            window_h = $window.innerHeight;
-                            is_portrait = window_h > window_w;
-                            // TODO set a debounce
-                            $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
-                        };
-
-                        resize_initialized = true;
-                    }
 
                 },
                 link: function($scope, iElement, iAttrs, controller) {
@@ -798,6 +911,7 @@
 
 
     // UTILS
+
 
     function getStyle(elem, styleProp) {
         if (window.jQuery && window.jQuery.fn.css) {
