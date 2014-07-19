@@ -18,23 +18,27 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 		
 		$scope.logMsg = "";
 
+		$scope.groupImages = [{index:"0"},{index:"0"},{index:"1"},{index:"1"},{index:"2"},{index:"2"},{index:"5"}];
+
 		// same url to bind to the atttributes
 		$scope.url_small = "http://www.placehold.it/320x100&text=small";
 		$scope.url_medium = "http://www.placehold.it/400x100&text=medium";
 		$scope.url_large = "http://www.placehold.it/500x100&text=large";
 		$scope.url_xlarge = "http://www.placehold.it/600x100&text=xlarge";
 
+		$scope.changeUrls = function()
+		{
+			$scope.url_small = "http://www.placehold.it/400x200&text=small-binding-modified";
+			$scope.url_medium = "http://www.placehold.it/500x200&text=later-binding-modified";
+			$scope.url_large = "http://www.placehold.it/600x200&text=large-binding-modified";
+			$scope.url_xlarge = "http://www.placehold.it/700x200&text=xlarge-binding-modified";
+			$scope.$digest();
+			//ngImagoService.loadImageById('img4');
+		}
+
 		$scope.loadImageById = function(imageId)
 		{
 			ngImagoService.loadImageById('img4');
-
-			$timeout(function(){
-				$scope.url_small = "http://www.placehold.it/1024x600&text=small-loaded-after";
-				$scope.url_medium = "http://www.placehold.it/1024x600&text=later-loaded-after";
-				$scope.url_large = "http://www.placehold.it/1024x600&text=large-loaded-after";
-				$scope.$digest();
-				ngImagoService.loadImageById('img4');
-			}, 4000)
 		}
 
 		$scope.loadImageByQueueIndex = function(index)
@@ -70,8 +74,8 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 			$scope.logMsg += 'ngImagoImageLoaded -> ' + JSON.stringify(data) + '\n';
 		});
 
-		$rootScope.$on("$ngImagoQueueIndexComplete",function(event,data){
-			//console.log("ngImagoQueueIndexComplete", data);
+		$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, lastObject){
+			console.log("ngImagoQueueIndexComplete", index, data, lastObject);
 			$scope.logMsg += 'ngImagoQueueIndexComplete -> ' + data + '\n';
 		});
 		

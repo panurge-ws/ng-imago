@@ -53,7 +53,9 @@
             custom="http://www.placehold.it/5204x100&text=custom" />
   
     <h3>Override default options</h3>
-    <p>Pass a JSON object to override the default options of the module (see Defaults).</p>
+    <p ng-non-bindable>Pass a JSON object to override the default options of the module (see Defaults).<br>
+    You can naturally use bindable templates like <b>small="{{url_small}}"</b> </p>
+    <input type="submit" ng-click="changeUrls()" value="Change to other url values" />
     <pre>
     &lt;img 
             <strong>ng-imago="{'portrait':false, small:480, medium:700}"</strong>
@@ -95,11 +97,11 @@
         />
 
     <h3>Delayed/Manual loading: loading by attribute</h3>
-    <p>You can choose to not load the image automatically with
-        <i>auto-load="false"</i>. You will have to explicit change the attribute or load image via ngImagoService function (see Code -> Loading manually).
+    <p>You can choose not to load the image automatically with
+        <b>auto-load="false"</b>. You will have to explicit change the attribute or load image via ngImagoService function (see Code -> Loading manually).
         <br>
         <br>Since you should load the images manually, you can set a
-        <i>load-group="NAME_OF_THE_GROUP"</i>attribute to load all the imges of that group.
+        <b>load-group="NAME_OF_THE_GROUP"</b>attribute to load all the imges of that group.
         <br><br>
 
         <input type="submit" ng-click="loadImageByAttr('load-group','group3')" value="Click to load the images above with load-group='group3'" />
@@ -121,20 +123,17 @@
         large="{{url_large}}-group32" /&gt;
     </pre>
 
-    <img 
+
+
+    <img ng-repeat="imgObj in groupImages track by $index"
         ng-imago auto-load="false"
-        queue-index="0"
+        queue-index="{{imgObj.index}}"
         load-group="group3"
 
-        large="{{url_large}}-group3" 
+        large="{{url_large}}-group3-index:{{imgObj.index}}" 
         />
 
-    <img 
-        ng-imago auto-load="false"
-        queue-index="1"
-        load-group="group3"
-
-        large="{{url_large}}-group32"  />
+    
 
 
     <h3>Delayed/Manual: loading by id</h3>
