@@ -29,10 +29,10 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 		$scope.changeUrls = function()
 		{
 			$scope.url_small = "http://www.placehold.it/400x200&text=small-binding-modified";
-			$scope.url_medium = "http://www.placehold.it/500x200&text=later-binding-modified";
+			$scope.url_medium = "http://www.placehold.it/500x200&text=medium-binding-modified";
 			$scope.url_large = "http://www.placehold.it/600x200&text=large-binding-modified";
 			$scope.url_xlarge = "http://www.placehold.it/700x200&text=xlarge-binding-modified";
-			$scope.$digest();
+			//$scope.$digest();
 			//ngImagoService.loadImageById('img4');
 		}
 

@@ -49,6 +49,8 @@
              
             large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
             xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
+
+            medium-portrait="http://www.placehold.it/420x100&text=medium-portrait"
             
             custom="http://www.placehold.it/5204x100&text=custom" />
   
@@ -58,7 +60,7 @@
     <input type="submit" ng-click="changeUrls()" value="Change to other url values" />
     <pre>
     &lt;img 
-            <strong>ng-imago="{'portrait':false, small:480, medium:700}"</strong>
+            <strong>ng-imago="{'small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}"</strong>
             
             small="{{url_small}}" 
             medium="{{url_medium}}" 
@@ -68,11 +70,11 @@
 
     </pre>
     <img 
-            ng-imago="{'portrait':false, small:480, medium:700}"
+            ng-imago="{'portrait':false, small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}"
             
             small="{{url_small}}-override" 
             medium="{{url_medium}}-override" 
-            large="{{url_small}}-override" 
+            large="{{url_large}}-override" 
             xlarge="{{url_xlarge}}-override" 
             />
 
