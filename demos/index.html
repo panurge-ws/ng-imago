@@ -25,6 +25,7 @@
 
 <body ng-controller="AppCtrl as app">
     
+
     <h1>ng-imago Demo</h1>
     
     <h2>Responsive resources</h2>
@@ -36,23 +37,28 @@
             ng-imago 
             
             <strong>small</strong>="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-<strong>@2x</strong>" 
+            
+            <strong>custom</strong>="http://www.placehold.it/420x100&text=custom"
+
             <strong>medium</strong>="http://www.placehold.it/420x100&text=medium, http://www.placehold.it/420x200&text=medium-<strong>@2x</strong>" 
             <strong>large</strong>="http://www.placehold.it/620x100&text=large, http://www.placehold.it/420x200&text=large-<strong>@2x</strong>" 
             <strong>xlarge</strong>="http://www.placehold.it/720x100&text=xlarge,  http://www.placehold.it/720x200&text=xlarge-<strong>@2x</strong>"
             
-            <strong>custom</strong>="http://www.placehold.it/5204x100&text=custom" /&gt;</pre>
+             /&gt;</pre>
     <img
-            ng-imago 
+            ng-imago
             
             small="http://www.placehold.it/320x100&text=small,http://www.placehold.it/320x200&text=small-@2x" 
-            medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x" 
-             
+            
+            custom="http://www.placehold.it/400x100&text=custom"
+
+            medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x"  
             large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
             xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
 
             medium-portrait="http://www.placehold.it/420x100&text=medium-portrait"
             
-            custom="http://www.placehold.it/5204x100&text=custom" />
+             />
   
     <h3>Override default options</h3>
     <p ng-non-bindable>Pass a JSON object to override the default options of the module (see Defaults).<br>
@@ -70,7 +76,7 @@
 
     </pre>
     <img 
-            ng-imago="{'portrait':false, small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}"
+            ng-imago="{'portrait':false, small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}" id="override"
             
             small="{{url_small}}-override" 
             medium="{{url_medium}}-override" 

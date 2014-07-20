@@ -7,8 +7,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     	console.log(ngImagoProvider.defaults());
 
     	// add a custum size: you can add in the image tag the attribute "custom"
-    	// to load image when resolution min-width = 2500
-    	ngImagoProvider.addDefaultSize('custom', 720);
+    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:401px) and (max-width:500px)');
 
     }
 ]);

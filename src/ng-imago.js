@@ -18,10 +18,8 @@
     // @private
     // defaults
     var default_settings = {
-        portrait: true,
-        portrait_suffix: "-portrait",
         avoid_cache: true,
-        unbind_when_loaded: true,
+        unbind_when_loaded: false,
         loaded_class: "ng-imago-loaded",
         loading_class: "ng-imago-loading",
         error_class: "ng-imago-error",
@@ -31,36 +29,7 @@
         container: 'parent'
     };
 
-    var default_sizes = [{
-        attr: 'small',
-        min_width: 480
-    }, {
-        attr: 'medium',
-        min_width: 768
-    }, {
-        attr: 'large',
-        min_width: 1280
-    }, {
-        attr: 'xlarge',
-        min_width: 1281
-    }];
-
-    if (angular.isUndefined(matchMedia)) {
-        throw "matchMedia does not exist. Please use a polyfill";
-    }
-
-    // Events
-    var EVENT_IMG_LOADED = "$ngImagoImageLoaded",
-        EVENT_IMG_ERROR = "$ngImagoImageError",
-        EVENT_IMG_LOAD_REQUEST = "$ngImagoLoadRequest",
-        EVENT_IMG_QUEUE_INDEX_COMPLETE = "$ngImagoQueueIndexComplete",
-        EVENT_IMG_QUEUE_COMPLETE = "$ngImagoLoadQueueComplete",
-        EVENT_IMG_RESIZE = "$ngImagoImageResize",
-        EVENT_WINDOW_RESIZE = "$ngImagoWindowResize";
-
-    var ngImagoModule = angular.module('ngImago', []);
-
-    ngImagoModule.value('defaultSizes', [
+    var default_sizes = [
 
         {
             attr: 'small',
@@ -75,7 +44,25 @@
             attr: 'xlarge',
             query: 'only screen and (min-width:1281px)'
         }
-    ]);
+    ];
+
+    var resize_initialized = false;
+
+    if (angular.isUndefined(matchMedia)) {
+        throw "matchMedia does not exist. Please use a polyfill";
+    }
+
+    // Events
+    var EVENT_IMG_LOADED = "$ngImagoImageLoaded",
+        EVENT_IMG_ERROR = "$ngImagoImageError",
+        EVENT_IMG_LOAD_REQUEST = "$ngImagoLoadRequest",
+        EVENT_IMG_QUEUE_INDEX_COMPLETE = "$ngImagoQueueIndexComplete",
+        EVENT_IMG_QUEUE_COMPLETE = "$ngImagoLoadQueueComplete",
+        EVENT_IMG_RESIZE = "$ngImagoImageResize",
+        EVENT_WINDOW_RESIZE = "$ngImagoWindowResize",
+        EVENT_MEDIA_QUERY_CHANGED = "$ngImagoMediaQueryChanged";
+
+    var ngImagoModule = angular.module('ngImago', []);
 
     ngImagoModule.value('utilsQueries', {
         'retina': 'only screen and (-webkit-min-device-pixel-ratio: 2), ' +
@@ -84,9 +71,7 @@
             'only screen and (min-device-pixel-ratio: 2), ' +
             'only screen and (min-resolution: 192dpi), ' +
             'only screen and (min-resolution: 2dppx)',
-        'portrait': 'only screen and (orientation: portrait)',
-        'default': 'only screen and (min-width: 1px)'
-
+        'portrait': 'only screen and (orientation: portrait)'
     });
 
     ngImagoModule.provider('ngImago', [
@@ -109,23 +94,19 @@
 
             };
 
-            this.addDefaultSize = function(attr, min_width) {
+            this.addDefaultSize = function(attr, query) {
 
                 default_sizes.push({
                     "attr": attr,
-                    "min_width": min_width
+                    "query": query
                 });
-                default_sizes.sort(function(a, b) {
-                    return a.min_width - b.min_width;
-                });
-
 
             };
 
-            this.changeDefaultSize = function(attr, min_width) {
+            this.changeDefaultSize = function(attr, query) {
                 for (var i = default_sizes.length - 1; i >= 0; i--) {
                     if (default_sizes[i].attr === attr) {
-                        default_sizes[i].attr = min_width;
+                        default_sizes[i].attr = query;
                     }
                 }
             };
@@ -144,15 +125,13 @@
         }
     ]);
 
-    ngImagoModule.service('ngImagoAttributeParser', ["$window", "$log", "$rootScope", "defaultSizes", "utilsQueries",
+    ngImagoModule.service('ngImagoAttributeParser', ["$window", "$log", "$rootScope", "utilsQueries",
 
-        function($window, $log, $rootScope, defaultSizes, utilsQueries) {
+        function($window, $log, $rootScope, utilsQueries) {
 
             var ngImagoAttributeParser = {};
 
-            ngImagoAttributeParser.listeners = [];
             ngImagoAttributeParser.mediaQueries = [];
-
 
             ngImagoAttributeParser.calculateUrl = function(attrs, options) {
 
@@ -168,7 +147,7 @@
             };
 
             ngImagoAttributeParser.getUrlForAttrs = function(attrs, options) {
-                
+
 
                 var attrMatching = null,
                     defaultAttr = null;
@@ -185,19 +164,22 @@
 
                         if (requestQuerySet != null) {
                             var query = "";
-                            if (!angular.isUndefined(options[attr])){
+                            
+                            if (!angular.isUndefined(options[attr])) {
                                 query = options[attr];
-                            }
-                            else{
+
+                            } else {
                                 query = requestQuerySet.query;
                             }
-                            console.log(query);
+                            
                             var mediaQueryRequested = _mediaQueryExists(query);
 
                             if (mediaQueryRequested === false) {
                                 mediaQueryRequested = _addMediaQuery(query);
                                 //console.log(attr, mediaQueryRequested)
                             }
+
+                            console.log(mediaQueryRequested);
 
                             if (searchPortrait) {
 
@@ -233,8 +215,8 @@
             };
 
             ngImagoAttributeParser.mediaQueryHandler = function(mq) {
-                if (mq.matches || mq.media.indexOf('portrait') > -1){
-                    $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
+                if (mq.matches || mq.media.indexOf('portrait') > -1) {
+                    $rootScope.$broadcast(EVENT_MEDIA_QUERY_CHANGED);
                 }
 
             };
@@ -258,27 +240,19 @@
                 }
             };
 
-            var _listenerExists = function(query) {
-                if (angular.isUndefined(ngImagoAttributeParser.listeners[query])) {
-                    return false;
-                } else {
-                    return ngImagoAttributeParser.listeners[query];
-                }
-            };
-
             var _getQuerySetByAttr = function(attr) {
-                for (var i = 0; i < defaultSizes.length; i++) {
-                    if (defaultSizes[i].attr === attr){
-                        return defaultSizes[i];
+                for (var i = 0; i < default_sizes.length; i++) {
+                    if (default_sizes[i].attr === attr) {
+                        return default_sizes[i];
                     }
                 }
                 return null;
             };
 
             var _getQuerySetByQuery = function(query) {
-                for (var i = 0; i < defaultSizes.length; i++) {
-                    if (defaultSizes[i].query === query){
-                        return defaultSizes[i];
+                for (var i = 0; i < default_sizes.length; i++) {
+                    if (default_sizes[i].query === query) {
+                        return default_sizes[i];
                     }
                 }
                 return null;
@@ -313,8 +287,7 @@
             // set utils
             ngImagoAttributeParser.isRetina = matchMedia(utilsQueries.retina).matches;
             ngImagoAttributeParser.portraitQuery = _addMediaQuery(utilsQueries.portrait);
-            ngImagoAttributeParser.defaultQuery = _addMediaQuery(utilsQueries.default);
-
+            
             return ngImagoAttributeParser;
         }
     ]);
@@ -710,10 +683,10 @@
                         $element.removeClass(_getSetting('loading_class'));
                         $element.addClass(_getSetting('loaded_class'));
 
-                        if ($scope.options.unbind_when_loaded && _request_load_listener) {
+                        if (_getSetting('unbind_when_loaded') && _request_load_listener) {
                             _request_load_listener();
                             _watch_attrs_fn();
-                            //_watch_resp_fn();
+                            _watch_resp_fn();
                         }
 
 
@@ -766,7 +739,7 @@
                         }
                     }
 
-                    $rootScope.$on(EVENT_WINDOW_RESIZE, function() {
+                    $rootScope.$on(EVENT_MEDIA_QUERY_CHANGED, function() {
 
                         if ($scope.initialized) {
                             startLoadImage(true, ($scope.options.auto_load || $scope.loaded)); // TODO params
@@ -812,11 +785,6 @@
                             init();
                         }
                     }, true);
-
-                },
-                link: function($scope, iElement, iAttrs, controller) {
-
-
 
                 }
 
@@ -902,10 +870,16 @@
                         }
 
                     });
-                },
-                link: function($scope, $element, $attrs, controller) {
 
+                    if (!resize_initialized) {
+                        
+                        $window.onresize = function() {
+                            // TODO set a debounce
+                            $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
+                        };
 
+                        resize_initialized = true;
+                    }
                 }
             };
         }
