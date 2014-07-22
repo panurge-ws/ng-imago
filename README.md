@@ -94,8 +94,7 @@ If you want follow its own rules you can pass to the ng-imago attribute a series
 ## Sequential loading
 ---
 ### (Complete documentation coming soon)
-### Automatic queueing
-### The "queue-index" attibute
+### Automatic queueing (AKA The "queue-index" attribute )
 The queue-index attribute helps you to load images sequentially. It creates a queue of images based on the attribute's value.
 If you set an attribute (queue-index="1"), the images with that attributes will be loaded after all the other images with no queue attribute (or with "queue-index=0") have been loaded.
 ```html
@@ -103,7 +102,7 @@ If you set an attribute (queue-index="1"), the images with that attributes will 
       default="delayed-default.jpg" 
       medium="delayed-medium.jpg" />
 ```
-### Manual loading
+### Manual queueing / loading
 You can set an attribute (auto-load="false") which prevent the image to be loaded. You can load it later, as you need, with some methods.
 ```html
 <img  ng-imago 
@@ -205,7 +204,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 
 ## This project is currently in beta version. Use at your own risk.
 ### Reporting issues is much appreciated.
-### Wait some days, or ask before pulling requests.
+### Wait some days (or ask) before pulling requests.
 
 ## Thanks.
 
