@@ -5,7 +5,7 @@
 
 Currently it's focused on:
 
-1. **Multi sources responsivness**
+1. **Multi resolutions sources (responsive images)**
 2. **Sequential loading (automatic or manual)**
 3. **Auto-resize to parent (fit / cover)**
 
@@ -33,7 +33,7 @@ You can also configure the defaults value. See below (Configuration).
 
 
 
-## Responsiveness*
+## Multi resolutions sources*
 ---
 **Use ng-imago to load the images according to a given resolution, exactly as you usually do with Media queries inside CSS.**
 
@@ -202,7 +202,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 ]);
 ```
 
-## This project is currently in beta version. Use at your own risk.
+## This project is currently in beta version. Use it at your own risk.
 ### Reporting issues is much appreciated.
 ### Wait some days (or ask) before pulling requests.
 
