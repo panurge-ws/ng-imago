@@ -838,8 +838,8 @@
                             if (container === "parent") {
                                 var parent = $element.parent();
                                 if (parent && parent.length > 0) {
-                                    var parComW = parseInt(getStyle(parent[0],"width"));
-                                    var parComH = parseInt(getStyle(parent[0],"height"));
+                                    var parComW = parseInt(getStyle(parent[0],"width"),10);
+                                    var parComH = parseInt(getStyle(parent[0],"height"),10);
                                     tW = parComW;
                                     tH = parComH;
                                 }
