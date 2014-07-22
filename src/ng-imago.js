@@ -81,7 +81,7 @@
 
         function() {
 
-            this.defaults = function(value) {
+            this.defaultsSettings = function(value) {
 
                 if (!angular.isUndefined(value)) {
                     if (value !== '') {
@@ -93,6 +93,22 @@
                     }
                 } else {
                     return default_settings;
+                }
+
+            };
+
+            this.defaultsSizes = function(value) {
+
+                if (!angular.isUndefined(value)) {
+                    if (value !== '') {
+                        for (var prop in default_sizes) {
+                            if (!angular.isUndefined(value[prop])) {
+                                default_sizes[prop] = value[prop];
+                            }
+                        }
+                    }
+                } else {
+                    return default_sizes;
                 }
 
             };

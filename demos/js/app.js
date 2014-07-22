@@ -1,12 +1,13 @@
 // NG app init
 var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     
-    // configuring defaults option and sizez
+    // configuring defaults option and sizes
     function(ngImagoProvider) {
+    	// see the defaults settings and sizes
+    	console.log(ngImagoProvider.defaultsSettings());
+    	console.log(ngImagoProvider.defaultsSizes()); 
 
-    	console.log(ngImagoProvider.defaults());
-
-    	// add a custum size: you can add in the image tag the attribute "custom"
+    	// add a custom size attribute with custom media query
     	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
 
     }
