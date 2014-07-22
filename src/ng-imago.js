@@ -57,6 +57,16 @@
         }
     ];
 
+    var utilsQueries = {
+        'retina':   'only screen and (-webkit-min-device-pixel-ratio: 2), ' +
+                    'only screen and (min--moz-device-pixel-ratio: 2), ' +
+                    'only screen and (-o-min-device-pixel-ratio: 2/1), ' +
+                    'only screen and (min-device-pixel-ratio: 2), ' +
+                    'only screen and (min-resolution: 192dpi), ' +
+                    'only screen and (min-resolution: 2dppx)',
+        'portrait': 'only screen and (orientation: portrait)'
+    };
+
     var resize_initialized = false;
 
     if (angular.isUndefined(matchMedia)) {
@@ -74,16 +84,6 @@
         EVENT_MEDIA_QUERY_CHANGED = "$ngImagoMediaQueryChanged";
 
     var ngImagoModule = angular.module('ngImago', []);
-
-    ngImagoModule.value('utilsQueries', {
-        'retina': 'only screen and (-webkit-min-device-pixel-ratio: 2), ' +
-            'only screen and (min--moz-device-pixel-ratio: 2), ' +
-            'only screen and (-o-min-device-pixel-ratio: 2/1), ' +
-            'only screen and (min-device-pixel-ratio: 2), ' +
-            'only screen and (min-resolution: 192dpi), ' +
-            'only screen and (min-resolution: 2dppx)',
-        'portrait': 'only screen and (orientation: portrait)'
-    });
 
     ngImagoModule.provider('ngImago', [
 
@@ -152,9 +152,9 @@
         }
     ]);
 
-    ngImagoModule.service('ngImagoAttributeParser', ["$window", "$log", "$rootScope", "utilsQueries",
+    ngImagoModule.service('ngImagoAttributeParser', ["$window", "$log", "$rootScope", 
 
-        function($window, $log, $rootScope, utilsQueries) {
+        function($window, $log, $rootScope) {
 
             var ngImagoAttributeParser = {};
 
@@ -201,7 +201,7 @@
 
                             if (mediaQueryRequested === false) {
                                 mediaQueryRequested = _addMediaQuery(query);
-                                
+
                             }
 
                             //console.log("attr",mediaQueryRequested.media,mediaQueryRequested.matches)
@@ -514,7 +514,7 @@
                 //replace:true,
                 scope: true,
                 restrict: 'A',
-                controller: function($scope, $element, $attrs, $transclude) {
+                controller: ["$scope", "$element", "$attrs", "$transclude", function($scope, $element, $attrs, $transclude) {
 
                     // flags
                     $scope.loaded = false;
@@ -800,7 +800,7 @@
                         }
                     }, true);
 
-                }
+                }]
 
             };
 
@@ -813,7 +813,7 @@
             return {
 
                 require: 'ngImago',
-                controller: function($scope, $element, $attrs) {
+                controller: ["$scope", "$element", "$attrs", function($scope, $element, $attrs) {
                     var _options = angular.isUndefined($attrs.imagoResize) ? {} : $scope.$eval($attrs.imagoResize);
 
 
@@ -838,8 +838,8 @@
                             if (container === "parent") {
                                 var parent = $element.parent();
                                 if (parent && parent.length > 0) {
-                                    var parComW = parseInt(getStyle(parent[0],"width"),10);
-                                    var parComH = parseInt(getStyle(parent[0],"height"),10);
+                                    var parComW = parseInt(getStyle(parent[0], "width"), 10);
+                                    var parComH = parseInt(getStyle(parent[0], "height"), 10);
                                     tW = parComW;
                                     tH = parComH;
                                 }
@@ -896,7 +896,7 @@
 
                         resize_initialized = true;
                     }
-                }
+                }]
             };
         }
     ]);
