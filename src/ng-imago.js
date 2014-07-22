@@ -18,15 +18,23 @@
     // @private
     // defaults
     var default_settings = {
+        // Append a random string to the URL to force reload
         avoid_cache: true,
-        unbind_when_loaded: false,
+        // Remove the bindings of the attributes when the images is loaded for performance reasons
+        unbind_when_loaded: true,
+        // The name of the class added to the image when loaded
         loaded_class: "ng-imago-loaded",
+        // The name of the class added to the image while it's loading
         loading_class: "ng-imago-loading",
+        // The name of the class added to the image when an error has occurred
         error_class: "ng-imago-error",
-        // size
-        scale: 'fit',
-        center: true,
-        container: 'parent'
+        // auto-size
+        // Scale mode
+        scale: 'fit', // [fit | cover]
+        // Center the image
+        center: true, // center inside the container
+        // The container type to scale and/or center the image
+        container: 'parent' // ["parent" | "window"]
     };
 
     var default_sizes = [
@@ -816,7 +824,6 @@
                     });
 
                     function layout() {
-                        // TODO param windows or parent
                         var scaleMode = getSetting('scale', _options);
                         var center = getSetting('center', _options);
 
@@ -830,10 +837,13 @@
 
                             if (container === "parent") {
                                 var parent = $element.parent();
-                                if (parent && parent.length > 0 && parent[0].width && parent[0].height) {
-                                    tW = parent[0].width;
-                                    tH = parent[0].height;
+                                if (parent && parent.length > 0) {
+                                    var parComW = parseInt(getStyle(parent[0],"width"));
+                                    var parComH = parseInt(getStyle(parent[0],"height"));
+                                    tW = parComW;
+                                    tH = parComH;
                                 }
+
                             } else if (container === "window") {
                                 tW = $window.innerWidth;
                                 tH = $window.innerHeight;

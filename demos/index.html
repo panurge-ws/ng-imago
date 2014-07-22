@@ -254,11 +254,11 @@
                 imago-resize="{scale:'fit', center:false, container:'window'}"  
         /&gt;
     </pre>
-        <img ng-imago medium="{{url_medium}}"
-                auto-load="false" 
-                class="imag_to_resize" 
-                imago-resize="{scale:'fit', center:false, container:'window'}"  
-        />
+        <div style="width:500px;height:500px;oveflow:hidden;">
+            <img ng-imago 
+                 medium="{{url_medium}}"
+                 imago-resize="{scale:'cover', center:true}" />
+        </div>
     
     <br>
     <strong>LOG</strong><br>
