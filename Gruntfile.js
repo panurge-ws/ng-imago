@@ -31,9 +31,6 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.min.js'
       },
     },
-    nodeunit: {
-      files: ['test/**/*_test.js']
-    },
     jshint: {
       options: {
         jshintrc: '.jshintrc'
@@ -46,10 +43,7 @@ module.exports = function(grunt) {
           jshintrc: 'lib/.jshintrc'
         },
         src: ['src/**/*.js']
-      },
-      test: {
-        src: ['test/**/*.js']
-      },
+      }
     },
     watch: {
       /*gruntfile: {
