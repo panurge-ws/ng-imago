@@ -32,8 +32,14 @@ div{
 a{
 	
 }
+h1{
+	font-size: 45px;
+}
+h2{
+	font-size: 25px;
+}
 h3{
-	font-size: 14px;
+	font-size: 20px;
 }
 code{
 	width:100%;

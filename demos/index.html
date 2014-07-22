@@ -36,6 +36,7 @@
     &lt;img  
             ng-imago 
             
+            <strong>default</strong>="http://www.placehold.it/320x100&text=default, http://www.placehold.it/320x200&text=default-<strong>@2x</strong>" 
             <strong>small</strong>="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-<strong>@2x</strong>" 
             
             <strong>custom</strong>="http://www.placehold.it/420x100&text=custom"
@@ -48,10 +49,12 @@
     <img
             ng-imago
             
+            default="http://www.placehold.it/320x100&text=default,http://www.placehold.it/320x200&text=default-@2x" 
             small="http://www.placehold.it/320x100&text=small,http://www.placehold.it/320x200&text=small-@2x" 
             
-            custom="http://www.placehold.it/400x100&text=custom"
-
+            custom="http://www.placehold.it/480x100&text=custom,http://www.placehold.it/320x200&text=custom-@2x" 
+            
+          
             medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x"  
             large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
             xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
@@ -64,9 +67,9 @@
     <p ng-non-bindable>Pass a JSON object to override the default options of the module (see Defaults).<br>
     You can naturally use bindable templates like <b>small="{{url_small}}"</b> </p>
     <input type="submit" ng-click="changeUrls()" value="Change to other url values" />
-    <pre>
+    <pre ng-non-bindable>
     &lt;img 
-            <strong>ng-imago="{'small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}"</strong>
+            <strong>ng-imago="{'small:'only screen and (min-width:320px)'}"</strong>
             
             small="{{url_small}}" 
             medium="{{url_medium}}" 
@@ -76,7 +79,7 @@
 
     </pre>
     <img 
-            ng-imago="{'portrait':false, small:'only screen and (max-width:320px)', medium:'only screen and (min-width:321px) and (max-width:768px)'}" id="override"
+            ng-imago="{ small:'only screen and (min-width:320px)'}" id="override"
             
             small="{{url_small}}-override" 
             medium="{{url_medium}}-override" 
@@ -100,6 +103,7 @@
     <img  
         ng-imago queue-index="1"
         
+        default="{{url_default}}-qi1" 
         medium="{{url_medium}}-qi1" 
         large="{{url_large}}-qi1" 
         />

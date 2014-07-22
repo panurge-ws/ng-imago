@@ -1,4 +1,4 @@
-/*! ng-imago - v0.1.0 - 2014-07-20
+/*! ng-imago - v0.1.0 - 2014-07-22
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
@@ -27,14 +27,17 @@
     var default_sizes = [
 
         {
+            attr: 'default',
+            query: 'only screen and (min-width: 1px)'
+        }, {
             attr: 'small',
-            query: 'only screen and (max-width: 480px)'
+            query: 'only screen and (min-width: 480px)'
         }, {
             attr: 'medium',
-            query: 'only screen and (min-width:481px) and (max-width: 768px)'
+            query: 'only screen and (min-width: 768px)'
         }, {
             attr: 'large',
-            query: 'only screen and (min-width:769px) and (max-width: 1280px)'
+            query: 'only screen and (min-width: 1280px)'
         }, {
             attr: 'xlarge',
             query: 'only screen and (min-width:1281px)'
@@ -143,10 +146,8 @@
 
             ngImagoAttributeParser.getUrlForAttrs = function(attrs, options) {
 
-
                 var attrMatching = null,
                     defaultAttr = null;
-
 
                 for (var attr in attrs) {
 
@@ -159,22 +160,22 @@
 
                         if (requestQuerySet != null) {
                             var query = "";
-                            
+
                             if (!angular.isUndefined(options[attr])) {
                                 query = options[attr];
 
                             } else {
                                 query = requestQuerySet.query;
                             }
-                            
+
                             var mediaQueryRequested = _mediaQueryExists(query);
 
                             if (mediaQueryRequested === false) {
                                 mediaQueryRequested = _addMediaQuery(query);
-                                //console.log(attr, mediaQueryRequested)
+                                
                             }
 
-                            console.log(mediaQueryRequested);
+                            //console.log("attr",mediaQueryRequested.media,mediaQueryRequested.matches)
 
                             if (searchPortrait) {
 
@@ -184,6 +185,7 @@
                                     defaultAttr = attrs[attr];
                                 }
                             } else {
+
                                 if (mediaQueryRequested.matches) {
                                     attrMatching = attrs[attr];
                                 } else if (attrMatching == null) {
@@ -210,9 +212,10 @@
             };
 
             ngImagoAttributeParser.mediaQueryHandler = function(mq) {
-                if (mq.matches || mq.media.indexOf('portrait') > -1) {
-                    $rootScope.$broadcast(EVENT_MEDIA_QUERY_CHANGED);
-                }
+                /*if (mq.matches || mq.media.indexOf('portrait') > -1) {
+                    
+                }*/
+                $rootScope.$broadcast(EVENT_MEDIA_QUERY_CHANGED);
 
             };
 
@@ -282,7 +285,7 @@
             // set utils
             ngImagoAttributeParser.isRetina = matchMedia(utilsQueries.retina).matches;
             ngImagoAttributeParser.portraitQuery = _addMediaQuery(utilsQueries.portrait);
-            
+
             return ngImagoAttributeParser;
         }
     ]);
@@ -357,8 +360,6 @@
                 if (ngImagoService.itemExists(indexGroup.items, obj)) {
                     return;
                 }
-
-                //console.log("add", obj.url);
 
                 indexGroup.items.push(obj);
 
@@ -439,24 +440,15 @@
 
                 var indexGroup = ngImagoService.indexExists(obj.index);
 
-                //console.log("remove1",ngImagoService.queue.length, indexGroup, indexGroup.items.length, obj.url);
-
                 var item = ngImagoService.itemExists(indexGroup.items, obj, true);
 
 
-                //console.log("remove2",ngImagoService.queue.length, indexGroup, indexGroup.items.length, obj.url);
-
-
                 if (indexGroup && indexGroup.items.length === 0) {
-
-                    //console.log("remove3",ngImagoService.queue.length);
 
                     ngImagoService.removeQueueIndex(indexGroup.index);
 
                     $rootScope.$broadcast(EVENT_IMG_QUEUE_INDEX_COMPLETE, thisIndex, obj, element);
 
-                    // reaching the next available loading index in the queue
-                    // we could have 0... 1... 4 
                     for (var i = 0; i < ngImagoService.queue.length; i++) {
                         if (ngImagoService.queue[i] && ngImagoService.queue[i].items && ngImagoService.queue[i].items.length > 0) {
                             ngImagoService.currIndex = ngImagoService.queue[i].index;
@@ -636,8 +628,6 @@
                         if (canQueue) {
                             ngImagoService.add(objToQueue);
                         }
-
-                        //console.log("onLoadImgRequest", canLoad, canLoadIndex, canQueue, data, $scope.options);
 
                         if (canLoad) {
                             startLoadImage(false, true);
@@ -867,7 +857,7 @@
                     });
 
                     if (!resize_initialized) {
-                        
+
                         $window.onresize = function() {
                             // TODO set a debounce
                             $rootScope.$broadcast(EVENT_WINDOW_RESIZE);

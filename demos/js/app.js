@@ -7,7 +7,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     	console.log(ngImagoProvider.defaults());
 
     	// add a custum size: you can add in the image tag the attribute "custom"
-    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:401px) and (max-width:500px)');
+    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
 
     }
 ]);
@@ -20,6 +20,7 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 		$scope.groupImages = [{index:"0"},{index:"0"},{index:"1"},{index:"1"},{index:"2"},{index:"2"},{index:"5"}];
 
 		// same url to bind to the atttributes
+		$scope.url_default = "http://www.placehold.it/320x100&text=default";
 		$scope.url_small = "http://www.placehold.it/320x100&text=small";
 		$scope.url_medium = "http://www.placehold.it/400x100&text=medium";
 		$scope.url_large = "http://www.placehold.it/500x100&text=large";
@@ -27,6 +28,7 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 
 		$scope.changeUrls = function()
 		{
+			$scope.url_default = "http://www.placehold.it/400x200&text=default-binding-modified";
 			$scope.url_small = "http://www.placehold.it/400x200&text=small-binding-modified";
 			$scope.url_medium = "http://www.placehold.it/500x200&text=medium-binding-modified";
 			$scope.url_large = "http://www.placehold.it/600x200&text=large-binding-modified";
@@ -74,8 +76,8 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 		});
 
 		$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, lastObject){
-			console.log("ngImagoQueueIndexComplete", index, data, lastObject);
-			$scope.logMsg += 'ngImagoQueueIndexComplete -> ' + data + '\n';
+			//console.log("ngImagoQueueIndexComplete", index, data, lastObject);
+			$scope.logMsg += 'ngImagoQueueIndexComplete -> ' + index + '\n';
 		});
 		
 
