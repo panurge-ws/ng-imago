@@ -88,3 +88,9 @@ img.ng-img-error{
 	background-color: black;
 	border:10px solid red;
 }
+div {
+	position:relative;
+}
+div img{
+	position:absolute;
+}

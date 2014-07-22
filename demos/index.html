@@ -254,11 +254,30 @@
                 imago-resize="{scale:'fit', center:false, container:'window'}"  
         /&gt;
     </pre>
-        <div style="width:500px;height:500px;oveflow:hidden;">
+        <div style="width:500px;height:200px;overflow:hidden;">
             <img ng-imago 
-                 medium="{{url_medium}}"
-                 imago-resize="{scale:'cover', center:true}" />
+                 auto-load="false"
+                 medium="{{url_medium}}" 
+                 class="imag_to_resize"
+                 imago-resize="{scale:'fit', center:true}" />
         </div>
+
+    <h3>Use ng-imago with DIV tags</h3>
+    <p>You can set the directive also in a DIV tag. The module will attach the image to its background-image CSS style.
+        In this way you can queue also background images that usually are loaded immediately when the CSS is used in the markup.
+        <br><br>
+        <input type="submit" ng-click="loadImageByClass('div_to_load')" value="Click to load the backroung image of the div" />
+    
+    </p>
+
+        <div style="width:500px;height:200px;overflow:hidden;"
+             ng-imago
+             auto-load="false"
+             medium="{{url_medium}}"
+             class="div_to_load"
+             imago-resize="{scale:'cover', center:true}">
+        </div>
+
     
     <br>
     <strong>LOG</strong><br>
