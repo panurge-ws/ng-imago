@@ -1,13 +1,13 @@
 ## Ng-Imago
 ---
 
-Ng-Imago is a module for AngularJS that aims to be a comprehensive library to manage images into your app.
+**Ng-Imago is a module for AngularJS that aims to be a comprehensive library to manage images into your app.**
 
 Currently it's focused on:
 
 1. **Multi sources responsivness**
-2. **Sequential loading**
-3. **Auto-resize**
+2. **Sequential loading (automatic or manual)**
+3. **Auto-resize to parent (fit / cover)**
 
 ## Requirements
 ---
