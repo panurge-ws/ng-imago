@@ -54,7 +54,7 @@
             query: 'only screen and (min-width: 1280px)'
         }, {
             attr: 'xlarge',
-            query: 'only screen and (min-width:1281px)'
+            query: 'only screen and (min-width: 1440px)'
         }
     ];
 

@@ -67,18 +67,18 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 			ngImagoService.loadByAttribute(attrName, attrValue);
 		}
 
-		$rootScope.$on("$ngImagoLoadQueueComplete",function(event,data){
+		$rootScope.$on("$ngImagoLoadQueueComplete",function(event, data){
 			//console.log("ngImagoLoadQueueComplete");
 			$scope.logMsg += 'ngImagoLoadQueueComplete' + '\n';
 		});
 
-		$rootScope.$on("$ngImagoImageLoaded",function(event,data){
+		$rootScope.$on("$ngImagoImageLoaded",function(event, data, element){
 			//console.log("ngImagoImageLoaded", data);
 			$scope.logMsg += 'ngImagoImageLoaded -> ' + JSON.stringify(data) + '\n';
 		});
 
-		$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, lastObject){
-			//console.log("ngImagoQueueIndexComplete", index, data, lastObject);
+		$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element){
+			//console.log("ngImagoQueueIndexComplete", index, data, element);
 			$scope.logMsg += 'ngImagoQueueIndexComplete -> ' + index + '\n';
 		});
 		
