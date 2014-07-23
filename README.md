@@ -32,6 +32,8 @@ var app = angular.module('app', ['ngImago']);
 You can also configure the defaults value. See below (Configuration).
 
 
+## How to use
+***
 
 ## Multi resolutions sources*
 ---
@@ -88,7 +90,22 @@ If you want follow its own rules you can pass to the ng-imago attribute a series
             />
 ```
 
+### **Using with no img elements**
+You can use the directive ng-imago also in element different from "img", as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style.
+```html
+<div style="width:500px;height:200px;overflow:hidden;"
+     ng-imago
+     auto-load="false"
+     medium="medium.jpg"
+     class="div_to_load"
+     imago-resize="{scale:'cover', center:true}">
+ </div>
+```
+If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you can't control sequential loading...
+
+
 *this library uses matchMedia detection. Yes, there is the usual bla bla about IE8. You can use a [polyfill](https://github.com/paulirish/matchMedia.js/) if you need to support "browsers" that doesn't support matchMedia feature.
+
 
 
 ## Sequential loading
@@ -134,6 +151,26 @@ angular.element(img).attr('auto-load',"true");
 
 ```
 
+### Events
+
+Ng-Imago dispatches some events related to loading actions via the $rootScope.
+```javascript
+
+// all the images in queue are loaded
+$rootScope.$on("$ngImagoLoadQueueComplete",function(event, data){
+
+});
+// when a single image is loaded
+$rootScope.$on("$ngImagoImageLoaded",function(event, data, element){
+
+});
+
+// when a queue-index group is loaded
+$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element){
+
+});
+
+```
 
 ## Auto resize
 ---
@@ -147,7 +184,26 @@ Set an attibute "imago-resize" with self-explanatory object values.
 </div>
 ```
 
-## Defaults
+## Configuration
+---
+### (Complete documentation coming soon)
+
+```javascript
+var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
+    // configuring defaults option and sizez
+    function(ngImagoProvider) {
+    	// see the defaults settings and sizes
+    	console.log(ngImagoProvider.defaultsSettings());
+    	console.log(ngImagoProvider.defaultsSizes()); 
+    	// you can use the function as a setter to pass an object with you customized defaults
+    	// E.g. defaultsSettings({avoid_cache:false, loaded_class:'my-loaded-class'});
+    	// add a custom size attribute with custom media query
+    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
+    }
+]);
+```
+
+## Defaults values
 ---
 ## Default sizes
 ### (Complete documentation coming soon)
@@ -184,23 +240,7 @@ center: true, // center inside the container
 container: 'parent' // ["parent" | "window"]
 ```
 
-## Configuration
-### (Complete documentation coming soon)
 
-```javascript
-var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
-    // configuring defaults option and sizez
-    function(ngImagoProvider) {
-    	// see the defaults settings and sizes
-    	console.log(ngImagoProvider.defaultsSettings());
-    	console.log(ngImagoProvider.defaultsSizes()); 
-    	// you can use the function as a setter to pass an object with you customized defaults
-    	// E.g. defaultsSettings({avoid_cache:false, loaded_class:'my-loaded-class'});
-    	// add a custom size attribute with custom media query
-    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
-    }
-]);
-```
 
 ## This project is currently in beta version. Use it at your own risk.
 ### Reporting issues is much appreciated.
