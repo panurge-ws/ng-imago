@@ -243,7 +243,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
         var myDefaultSizes = ngImagoProvider.defaultsSizes();
     	// you can use these functions as a setter passing an object with your customized defaults
     	// E.g.:
-        defaultsSettings({avoid_cache:false, loaded_class:'my-loaded-class'});
+        ngImagoProvider.defaultsSettings({avoid_cache:false, loaded_class:'my-loaded-class'});
     	
         // you can add a custom size attribute with custom media query
     	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
