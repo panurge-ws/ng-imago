@@ -570,7 +570,13 @@
                         }
 
                         function setOptions() {
-                            $scope.options = angular.isUndefined($attrs.ngImago) || $attrs.ngImago === "" ? {} : $scope.$eval($attrs.ngImago);
+                            if (!angular.isUndefined($attrs.override)) {
+                                $scope.options = $attrs.override === "" ? {} : $scope.$eval($attrs.override);
+                            }
+                            else{
+                                $scope.options = angular.isUndefined($attrs.ngImago) || $attrs.ngImago === "" ? {} : $scope.$eval($attrs.ngImago);
+                            }
+                            //console.log($scope.options);
                         }
 
                         function calcUrl() {
@@ -712,7 +718,7 @@
                                 index: $scope.options.queue_index
                             }, $element);
 
-                            $scope.$digest();
+                            $scope.$apply();
                         }
 
                         function onImageLoad(event) {
@@ -731,12 +737,16 @@
                                 _watch_resp_fn();
                             }
 
+                            if ($scope.elementType !== "IMG") {
+                                $element.css('background-image', 'url(' + _image.attr("src") + ')');
+                            }
+
                             $rootScope.$broadcast(EVENT_IMG_LOADED, {
                                 url: $scope.options.source_to_set,
                                 index: $scope.options.queue_index,
                             }, $element);
 
-                            $scope.$digest();
+                            $scope.$apply();
                         }
 
                         function startLoadImage(recalcURL, forceLoad) {
@@ -780,11 +790,8 @@
                                 src += "?c=" + (Math.random() * 100000).toString();
                             }
 
-                            if ($scope.elementType === "IMG") {
-                                $element.attr("src", src);
-                            } else {
-                                $element.css('background-image', 'url(' + src + ')');
-                            }
+                            _image.attr("src", src);
+
                         }
 
 
@@ -854,22 +861,30 @@
                     function($scope, $element, $attrs) {
                         var _options = angular.isUndefined($attrs.imagoResize) ? {} : $scope.$eval($attrs.imagoResize);
 
-                        if ($scope.elementType === 'NO-IMG') {
 
-                            $element.css('background-size', getSetting('scale', _options));
+                        
 
-                            if (getSetting('center', _options) === true) {
-                                $element.css('background-position', 'center center');
-                            }
-
-                            // since we don't need nothing else with no-img elements 
-                            // we can stop the directive here
-                            return;
-                        }
+                            
+                        
 
                         $scope.$watch('loaded', function(nv, ov) {
                             if (nv === true) {
-                                layout();
+                                if ($scope.elementType === 'NO-IMG') {
+                                    
+                                    var scaleMode = getSetting('scale', _options);
+                                    var center = getSetting('center', _options);
+                                    
+                                    if (scaleMode === "cover" || scaleMode === "fit") {
+                                        $element.css('background-size', scaleMode);
+                                    }
+
+                                    if (center === true) {
+                                        $element.css('background-position', 'center center');
+                                    }
+                                }
+                                else{
+                                    layout();
+                                }
                             }
                         });
 

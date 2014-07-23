@@ -97,3 +97,6 @@ div img{
 ng-imago{
 	display: block;
 }
+.my-loaded-class{
+	border:5px solid black;
+}
