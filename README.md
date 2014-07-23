@@ -156,6 +156,8 @@ ngImagoService.loadQueueIndex(1234);
 // changing the auto-load to true
 var img = document.getElementById('img_111');
 angular.element(img).attr('auto-load',"true");
+// or exactly equivalent
+//angular.element(img).scope().load();
 
 ```
 
