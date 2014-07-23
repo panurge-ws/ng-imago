@@ -81,10 +81,10 @@ You can naturally use the AngularJS templates style to set the attibute's value.
      large="{{url_large}}"  />
 ```
 ### **Overriding single image**
-If you want follow its own rules you can pass to the ng-imago attribute a series of overriding values, for sizes or for settings.
+If you want that an image follows its own rules, you can pass to the ng-imago attribute a series of overriding values either for sizes or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
 ```html
 <img ng-imago="{ small:'only screen and (min-width:320px)'}"
-     small="{{url_small}}-override" 
+     small="{{url_small}}-override-loaded-when-min-width-is-320px" 
      medium="{{url_medium}}" 
      large="{{url_large}}" 
      xlarge="{{url_xlarge}}" 
