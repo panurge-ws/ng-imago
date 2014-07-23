@@ -32,7 +32,7 @@ var app = angular.module('app', ['ngImago']);
 You can also configure the defaults value. See below (Configuration).
 
 
-## How to use
+### HOW TO USE
 ***
 
 ## Multi resolutions sources*
