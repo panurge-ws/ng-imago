@@ -93,16 +93,15 @@ You can naturally use the AngularJS templates style to set the attibute's value.
 ### **Overriding single image**
 If you want that an image follows its own rules, you can pass to the ng-imago attribute an object of overriding values either for sizes or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
 ```html
-<img ng-imago="{ small:'only screen and (min-width:320px)'}"
+<img ng-imago="{ small:'only screen and (min-width:320px)', loaded_class:'my-loaded-class' }"
      small="{{url_small}}-override-loaded-when-min-width-is-320px" 
      medium="{{url_medium}}" 
      large="{{url_large}}" 
-     xlarge="{{url_xlarge}}" 
-            />
+     xlarge="{{url_xlarge}}"  />
 ```
 
 ### **Using with other tags or with ng-imago tag**
-You can use the directive ng-imago also in elements that aren't "img" tag, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style. You can also use the ng-imago directive as a tag.
+You can use the directive ng-imago also in elements that aren't "img" tags, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style. You can also use the ng-imago directive as a tag.
 ```html
 <div            style="width:500px;height:200px;overflow:hidden;"
      ng-imago
