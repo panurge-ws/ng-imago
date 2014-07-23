@@ -53,7 +53,7 @@ Set attibutes for each resolution you want to support, passing inside the attrib
      large="large.jpg"
      xlarge="xlarge.jpg"  />
 ```
-Each attribute checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load image's url within the attribute.
+Each attribute checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load the image's url within the attribute.
 
 For the default values of each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#defaults-values)).
 
