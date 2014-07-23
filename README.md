@@ -139,7 +139,7 @@ You can set an attribute (auto-load="false") which prevents the image to be imme
       default="delayed-default.jpg" 
       medium="delayed-medium.jpg" />
 ```
-You can use Javascript methods provided in the service called 'ngImagoService'. You can load the image above with the following methods. Inject the service in your controller or directive.
+You can use Javascript methods provided in the service called 'ngImagoService', injecting the service in your controller or directive. You can load the image above with the following methods. 
 ```javascript
 // load images with attibutes and values
 ngImagoService.loadByAttribute("load-group", "group1");
