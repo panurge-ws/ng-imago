@@ -12,7 +12,7 @@ Currently it's focused on:
 ## Requirements
 ---
 - [AngularJS](http://angularjs.org/)
-- [matchMedia polyfill](https://github.com/paulirish/matchMedia.js/) (only if you need to support "browsers" [without native matchMedia](http://caniuse.com/matchmedia) detection. Yes, IE8...
+- [matchMedia polyfill](https://github.com/paulirish/matchMedia.js/) (only if you need to support "browsers" [without native matchMedia](http://caniuse.com/matchmedia) detection. Yes, IE8...)
 
 
 ## Install
