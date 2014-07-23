@@ -201,7 +201,7 @@ ngImagoService.loadByAttribute("load-group", "group1");
 ```
 It will load the three images but #img_1 and #img_2 will be loaded after #img_0 has been completely loaded.
 
-As a final note, notice that you don't need to set progressive indeces. You can set queue-index="3" and queue-index="123": 123 indeces will be loaded after 3, if there are no intermediate indeces...
+As a final note, notice that you don't need to set stricly subsequent indeces (1,2,3...). You can set queue-index="3" and queue-index="123": "123" indeces will be loaded after "3", if there are no intermediate indeces...
 
 ### Events
 
