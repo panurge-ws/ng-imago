@@ -1,7 +1,7 @@
 ## Ng-Imago
 ---
 
-**Ng-Imago is a module for AngularJS that aims to be a comprehensive library to manage images into your app.**
+**Ng-Imago is a module for AngularJS that aims to be a comprehensive library for managing manage images into your project.**
 
 Currently it's focused on:
 
@@ -15,6 +15,9 @@ Insert AngularJS in your head tags. Eg.:
 ```html
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
 ```
+And now the boring note about IE8. This library uses matchMedia detection, not supported by IE8. You can use a [polyfill](https://github.com/paulirish/matchMedia.js/), if you need supporting IE8.
+
+
 ## Install
 ---
 Download the [production version][min] or the [development version][max].
@@ -29,16 +32,16 @@ Download the [production version][min] or the [development version][max].
 ```javascript
 var app = angular.module('app', ['ngImago']);
 ```
-You can also configure the defaults value. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
+You can also configure the default values. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
 
 
 
 ### HOW TO USE
 ***
 
-## Multi resolutions sources*
+## 1. Multi resolutions sources
 ---
-**Use ng-imago to load the images according to a given resolution, exactly as you usually do with Media queries inside CSS.**
+**Use ng-imago to load images according to a given resolution (or media query), exactly as you usually do with Media queries inside CSS.**
 
 In your HTML, insert a **img** tag and add the **ng-imago** directive. 
 Set attibutes for each resolution you want to support, passing inside the attribute the url of the image.
@@ -48,22 +51,27 @@ Set attibutes for each resolution you want to support, passing inside the attrib
      small="small.jpg"
      medium="medium.jpg"  
      large="large.jpg"
-     xlarge="xlarge.jpg"
-     medium-portrait="medium-portrait.jpg"  />
+     xlarge="xlarge.jpg"  />
 ```
-For the default values for each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#defaults-values)).
+Each attribute checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load image's url within the attribute.
 
-**Attention: you can't set the "src" attribute using Ng-Imago.** Why? See below.
+For the default values of each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#defaults-values)).
+
+You can override the value of each attribute for a [single image](https://github.com/panurge-ws/ng-imago#overriding-single-image), or you can override them [globally](https://github.com/panurge-ws/ng-imago#configuration). Furthermore, you can also add your customized attributes.
+
+**Attention: you can't set the "src" attribute using Ng-Imago, otherwise, the sequential loading won't work properly.**
+
 
 ### **Pixel density support (Retina)**
 
-If you want to support different Pixel densities, you can simply set two URLs (comma separated) in the attribute: if one of them has the "**@2x**" suffix in the name, Ng-Imago will load that in screens with pixel density > 1.
+If you want to support different pixel densities, you can simply set two urls (comma separated) in the attribute: if one of them has the "**@2x**" suffix in the name, Ng-Imago will load it in screens with pixel density > 1.
 ```html
 <img ng-imago
      medium="default.jpg,default@2x.jpg"  />
 ```
+
 ### **Orientation support**
-_(Really beta... anyway...)_
+_(Still in test)_
 If you set an attibute with a "-portrait" suffix, Ng-Imago will load that source if: 
 1. the resolution matches the attribute (medium => (min-width: 768px) and
 2. if the device orientation is portrait 
@@ -72,6 +80,7 @@ If you set an attibute with a "-portrait" suffix, Ng-Imago will load that source
      medium="medium.jpg"  
      medium-portrait="medium-portrait.jpg"  />
 ```
+
 ### **Angular templates**
 
 You can naturally use the AngularJS templates style to set the attibute's value. Those values are bindable, at least until the image is loaded. (See the [default settings unbind_when_loaded](https://github.com/panurge-ws/ng-imago#default-settings) below for further details).
@@ -80,8 +89,9 @@ You can naturally use the AngularJS templates style to set the attibute's value.
      medium="{{url_medium}}"  
      large="{{url_large}}"  />
 ```
+
 ### **Overriding single image**
-If you want that an image follows its own rules, you can pass to the ng-imago attribute a series of overriding values either for sizes or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
+If you want that an image follows its own rules, you can pass to the ng-imago attribute an object of overriding values either for sizes or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
 ```html
 <img ng-imago="{ small:'only screen and (min-width:320px)'}"
      small="{{url_small}}-override-loaded-when-min-width-is-320px" 
@@ -92,7 +102,7 @@ If you want that an image follows its own rules, you can pass to the ng-imago at
 ```
 
 ### **Using with other tags or with ng-imago tag**
-You can use the directive ng-imago also in elements that aren't "img" elements, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style. You can also use the ng-imago directive as a tag.
+You can use the directive ng-imago also in elements that aren't "img" tag, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style. You can also use the ng-imago directive as a tag.
 ```html
 <div            style="width:500px;height:200px;overflow:hidden;"
      ng-imago
@@ -110,8 +120,6 @@ You can use the directive ng-imago also in elements that aren't "img" elements, 
 ```
 If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you can't control sequential loading...
 
-
-*this library uses matchMedia detection. Yes, there is the usual bla bla about IE8. You can use a [polyfill](https://github.com/paulirish/matchMedia.js/) if you need to support "browsers" that doesn't support matchMedia feature.
 
 
 
@@ -160,6 +168,32 @@ angular.element(img).attr('auto-load',"true");
 //angular.element(img).scope().load();
 
 ```
+## Manual load + automatic queue? Yes.
+You can mix the two methods setting _auto-load=false_ and _queue-index_. If you have a series of images with _auto-load="false"_ and several _queue-index_ values, at the time you will load that group, it will be loaded sequentially.
+E.g.:
+```html
+<img  ng-imago id="img_0"
+      auto-load="false"  
+      load-group="group1"
+      queue-index="0" 
+      medium="delayed-medium0.jpg" />
+<img  ng-imago id="img_1"
+      auto-load="false"  
+      load-group="group1"
+      queue-index="2" 
+      medium="delayed-medium1.jpg" />
+<img  ng-imago id="img_2"
+      auto-load="false"  
+      load-group="group1"
+      queue-index="2" 
+      medium="delayed-medium2.jpg" />
+```
+```javascript
+ngImagoService.loadByAttribute("load-group", "group1");
+```
+It will load the three images but #img_1 and #img_2 will be loaded after #img_0 has been completely loaded.
+
+As a final note, notice that you don't need to set progressive indeces. You can set queue-index="3" and queue-index="123": 123 indeces will be loaded after 3, if there are no intermediate indeces...
 
 ### Events
 
@@ -167,16 +201,16 @@ Ng-Imago dispatches some events related to loading actions via the $rootScope.
 ```javascript
 
 // all the images in queue are loaded
-$rootScope.$on("$ngImagoLoadQueueComplete",function(event, data){
+$rootScope.$on("$ngImagoLoadQueueComplete", function(event, data){
 
 });
 // when a single image is loaded
-$rootScope.$on("$ngImagoImageLoaded",function(event, data, element){
+$rootScope.$on("$ngImagoImageLoaded", function(event, data, element){
 
 });
 
 // when a queue-index group is loaded
-$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element){
+$rootScope.$on("$ngImagoQueueIndexComplete", function(event, index, data, element){
 
 });
 
@@ -184,8 +218,7 @@ $rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element
 
 ## Auto resize
 ---
-**(Complete documentation coming soon)**
-Set an attibute "imago-resize" with self-explanatory object values.
+You can set an attibute "imago-resize" with self-explanatory object values.
 ```html
 <div style="width:500px;height:300px">
   <img ng-imago 
@@ -203,9 +236,10 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     // configuring defaults option and sizez
     function(ngImagoProvider) {
     	// see the defaults settings and sizes
-    	console.log(ngImagoProvider.defaultsSettings());
-    	console.log(ngImagoProvider.defaultsSizes()); 
-    	// you can use the function as a setter to pass an object with you customized defaults
+        // used with no value, the following functions are getter
+        var myDefaultSettings = ngImagoProvider.defaultsSettings();
+        var myDefaultSizes = ngImagoProvider.defaultsSizes();
+    	// you can use these functions as a setter passing an object with your customized defaults
     	// E.g. defaultsSettings({avoid_cache:false, loaded_class:'my-loaded-class'});
     	// add a custom size attribute with custom media query
     	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
@@ -216,7 +250,6 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 ## Defaults values
 ---
 ## Default sizes
-**(Complete documentation coming soon)**
 
 ```javascript
 'default' => 'only screen and (min-width: 1px)'
@@ -230,9 +263,9 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 ### (Complete documentation coming soon)
 
 ```javascript
-// Append a random string to the URL to force reload
+// Appends a random string to the URL to force reload
 avoid_cache: true,
-// Remove the bindings of the attributes when the images is loaded for performance reasons
+// Removes the bindings of the attributes when the images is loaded for performance reasons
 unbind_when_loaded: true,
 // The name of the class added to the image when loaded
 loaded_class: "ng-imago-loaded",
@@ -254,7 +287,7 @@ container: 'parent' // ["parent" | "window"]
 
 ## This project is currently in beta version. Use it at your own risk.
 ### Reporting issues is much appreciated.
-### Wait some days (or ask) before pulling requests.
+### Wait some other few days (or ask) before pulling requests.
 
 ## Thanks.
 
