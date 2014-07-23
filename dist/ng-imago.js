@@ -316,19 +316,6 @@
 
             var ngImagoService = {};
 
-            ngImagoService.queue = [];
-            ngImagoService.currIndex = -1;
-            ngImagoService.perc = 0;
-            ngImagoService.perc_items = 0;
-
-            $rootScope.$on(EVENT_IMG_LOADED, function(event, data, element) {
-                ngImagoService.remove(data, element);
-            });
-
-            $rootScope.$on(EVENT_IMG_ERROR, function(event, data, element) {
-                ngImagoService.remove(data);
-            });
-
             ngImagoService.loadQueueIndex = function(index) {
 
                 $rootScope.$broadcast(EVENT_IMG_LOAD_REQUEST, {
@@ -365,41 +352,65 @@
                 });
             };
 
-            ngImagoService.add = function(obj) {
+            return ngImagoService;
 
-                var indexGroup = ngImagoService.indexExists(obj.index);
+        }
+    ]);
+
+    ngImagoModule.service('ngImagoQueue', ['$rootScope',
+
+        function($rootScope) {
+
+            var ngImagoQueue = {};
+
+            ngImagoQueue.queue = [];
+            ngImagoQueue.currIndex = -1;
+            ngImagoQueue.perc = 0;
+            ngImagoQueue.perc_items = 0;
+
+            $rootScope.$on(EVENT_IMG_LOADED, function(event, data, element) {
+                ngImagoQueue.remove(data, element);
+            });
+
+            $rootScope.$on(EVENT_IMG_ERROR, function(event, data, element) {
+                ngImagoQueue.remove(data);
+            });
+
+            ngImagoQueue.add = function(obj) {
+
+                var indexGroup = ngImagoQueue.indexExists(obj.index);
                 if (!indexGroup) {
                     indexGroup = {
                         index: obj.index,
                         items: []
                     };
-                    ngImagoService.queue.push(indexGroup);
+                    ngImagoQueue.queue.push(indexGroup);
                 }
 
-                if (ngImagoService.itemExists(indexGroup.items, obj)) {
+                if (ngImagoQueue.itemExists(indexGroup.items, obj)) {
                     return;
                 }
 
                 indexGroup.items.push(obj);
 
-                ngImagoService.queue.sort(function(a, b) {
+                ngImagoQueue.queue.sort(function(a, b) {
                     return a.index - b.index;
                 });
 
             };
 
-            ngImagoService.indexExists = function(index, andRemove) {
+            ngImagoQueue.indexExists = function(index, andRemove) {
 
-                if (!ngImagoService.queue || ngImagoService.queue.length === 0) {
+                if (!ngImagoQueue.queue || ngImagoQueue.queue.length === 0) {
                     return false;
                 }
 
-                for (var i = ngImagoService.queue.length - 1; i >= 0; i--) {
-                    if (ngImagoService.queue[i].index === index) {
+                for (var i = ngImagoQueue.queue.length - 1; i >= 0; i--) {
+                    if (ngImagoQueue.queue[i].index === index) {
                         if (andRemove === true) {
-                            return ngImagoService.queue.splice(i, 1);
+                            return ngImagoQueue.queue.splice(i, 1);
                         } else {
-                            return ngImagoService.queue[i];
+                            return ngImagoQueue.queue[i];
                         }
                     }
                 }
@@ -407,10 +418,10 @@
                 return false;
             };
 
-            ngImagoService.itemExists = function(dict, obj, andRemove) {
+            ngImagoQueue.itemExists = function(dict, obj, andRemove) {
 
                 if (dict === null) {
-                    var indexGroup = ngImagoService.indexExists(obj.index);
+                    var indexGroup = ngImagoQueue.indexExists(obj.index);
                     if (indexGroup && indexGroup.items && indexGroup.items.length > 0) {
                         dict = indexGroup.items;
                     }
@@ -433,22 +444,22 @@
                 return false;
             };
 
-            ngImagoService.removeQueueIndex = function(index) {
+            ngImagoQueue.removeQueueIndex = function(index) {
 
-                if (!ngImagoService.queue || ngImagoService.queue.length === 0) {
+                if (!ngImagoQueue.queue || ngImagoQueue.queue.length === 0) {
                     return false;
                 }
 
-                for (var i = ngImagoService.queue.length - 1; i >= 0; i--) {
-                    if (ngImagoService.queue[i].index === index) {
-                        return ngImagoService.queue.splice(i, 1);
+                for (var i = ngImagoQueue.queue.length - 1; i >= 0; i--) {
+                    if (ngImagoQueue.queue[i].index === index) {
+                        return ngImagoQueue.queue.splice(i, 1);
                     }
                 }
 
                 return false;
             };
 
-            ngImagoService.remove = function(obj, element) {
+            ngImagoQueue.remove = function(obj, element) {
 
 
                 if (angular.isUndefined(obj)) {
@@ -457,37 +468,37 @@
 
                 var thisIndex = obj.index;
 
-                var indexGroup = ngImagoService.indexExists(obj.index);
+                var indexGroup = ngImagoQueue.indexExists(obj.index);
 
-                var item = ngImagoService.itemExists(indexGroup.items, obj, true);
+                var item = ngImagoQueue.itemExists(indexGroup.items, obj, true);
 
 
                 if (indexGroup && indexGroup.items.length === 0) {
 
-                    ngImagoService.removeQueueIndex(indexGroup.index);
+                    ngImagoQueue.removeQueueIndex(indexGroup.index);
 
                     $rootScope.$broadcast(EVENT_IMG_QUEUE_INDEX_COMPLETE, thisIndex, obj, element);
 
-                    for (var i = 0; i < ngImagoService.queue.length; i++) {
-                        if (ngImagoService.queue[i] && ngImagoService.queue[i].items && ngImagoService.queue[i].items.length > 0) {
-                            ngImagoService.currIndex = ngImagoService.queue[i].index;
+                    for (var i = 0; i < ngImagoQueue.queue.length; i++) {
+                        if (ngImagoQueue.queue[i] && ngImagoQueue.queue[i].items && ngImagoQueue.queue[i].items.length > 0) {
+                            ngImagoQueue.currIndex = ngImagoQueue.queue[i].index;
                             break;
                         }
                     }
 
-                    if (ngImagoService.queue.length === 0) {
+                    if (ngImagoQueue.queue.length === 0) {
                         $rootScope.$broadcast(EVENT_IMG_QUEUE_COMPLETE, thisIndex, obj, element);
                     } else {
                         $rootScope.$broadcast(EVENT_IMG_LOAD_REQUEST, {
                             type: "index",
-                            index: ngImagoService.currIndex
+                            index: ngImagoQueue.currIndex
                         });
                     }
 
                 }
             };
 
-            return ngImagoService;
+            return ngImagoQueue;
 
         }
     ]);
@@ -496,8 +507,8 @@
 
     /// DIRECTIVE ///
 
-    ngImagoModule.directive('ngImago', ['ngImagoService', 'ngImagoAttributeParser', '$rootScope', '$log',
-        function(ngImagoService, ngImagoAttributeParser, $rootScope, $log) {
+    ngImagoModule.directive('ngImago', ['ngImagoQueue', 'ngImagoAttributeParser', '$rootScope', '$log',
+        function(ngImagoQueue, ngImagoAttributeParser, $rootScope, $log) {
 
             return {
                 priority: 950, // set to 1000 so ImageResize loader can execute after
@@ -585,7 +596,7 @@
                             if ($scope.options && $scope.options.source_to_set && $scope.options.source_to_set !== "") {
 
                                 // remove from the queue if a url was added before
-                                ngImagoService.itemExists(null, {
+                                ngImagoQueue.itemExists(null, {
                                     index: $scope.options.queue_index,
                                     url: $scope.options.source_to_set
                                 }, true);
@@ -610,7 +621,7 @@
                             }
 
                             if ($scope.options.auto_load === true) {
-                                ngImagoService.add({
+                                ngImagoQueue.add({
                                     index: $scope.options.queue_index,
                                     url: $scope.options.source_to_set
                                 });
@@ -670,13 +681,13 @@
                                 (data.type === 'queueIndex' && $scope.options.queue_index === data.index)) {
                                 canLoad = true;
                             } else if (canLoadIndex && data.index > 0) {
-                                canLoad = ngImagoService.itemExists(null, objToQueue) !== false;
+                                canLoad = ngImagoQueue.itemExists(null, objToQueue) !== false;
                             } else if (canQueue && $scope.options.queue_index === 0) {
                                 canLoad = true;
                             }
 
                             if (canQueue) {
-                                ngImagoService.add(objToQueue);
+                                ngImagoQueue.add(objToQueue);
                             }
 
                             if (canLoad) {
