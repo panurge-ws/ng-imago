@@ -55,7 +55,7 @@ Set attibutes for each resolution you want to support, passing inside the attrib
 ```
 Each attribute checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load the image's url within the attribute.
 
-For the default values of each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#defaults-values)).
+For the default values of each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#default-values)).
 
 You can override the value of each attribute for a [single image](https://github.com/panurge-ws/ng-imago#overriding-single-image), or you can override them [globally](https://github.com/panurge-ws/ng-imago#configuration). Furthermore, you can also add your customized attributes.
 
@@ -91,7 +91,7 @@ You can naturally use the AngularJS templates style to set the attibute's value.
 ```
 
 ### **Overriding single image**
-If you want that an image follows its own rules, you can pass to the ng-imago attribute an object of overriding values either for sizes or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
+If you want that an image follows its own rules, you can pass to the ng-imago attribute an object of overriding values either for [sizes](https://github.com/panurge-ws/ng-imago#default-sizes) or for [settings](https://github.com/panurge-ws/ng-imago#default-settings).
 ```html
 <img ng-imago="{ small:'only screen and (min-width:320px)', loaded_class:'my-loaded-class' }"
      small="{{url_small}}-override-loaded-when-min-width-is-320px" 
@@ -264,7 +264,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 ]);
 ```
 
-## Defaults values
+## Default values
 ---
 ## Default sizes
 
