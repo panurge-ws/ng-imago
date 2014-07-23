@@ -91,16 +91,22 @@ If you want follow its own rules you can pass to the ng-imago attribute a series
             />
 ```
 
-### **Using with no img elements**
-You can use the directive ng-imago also in elements that aren't "img" tag, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style.
+### **Using with other tags or with ng-imago tag**
+You can use the directive ng-imago also in elements that aren't "img" elements, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style. You can also use the ng-imago directive as a tag.
 ```html
-<div style="width:500px;height:200px;overflow:hidden;"
+<div            style="width:500px;height:200px;overflow:hidden;"
      ng-imago
      auto-load="false"
      medium="medium.jpg"
      class="div_to_load"
-     imago-resize="{scale:'cover', center:true}">
+     imago-resize="{scale:'fit', center:false}">
  </div>
+ <ng-imago     style="width:500px;height:200px;overflow:hidden;"
+     auto-load="false"
+     medium="medium.jpg"
+     class="div_to_load"
+     imago-resize="{scale:'cover', center:true}">
+ </ng-imago>
 ```
 If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you can't control sequential loading...
 
