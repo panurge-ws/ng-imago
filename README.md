@@ -5,9 +5,9 @@
 
 Currently it's focused on:
 
-1. **Multi resolutions sources (responsive images)**
-2. **Sequential loading (automatic or manual)**
-3. **Auto-resize to parent (fit / cover)**
+1. **[Multi resolutions sources](https://github.com/panurge-ws/ng-imago#multi-resolutions-sources) (responsive images)**
+2. **[Sequential loading](https://github.com/panurge-ws/ng-imago#sequential-loading) (automatic or manual)**
+3. **[Auto-resize](https://github.com/panurge-ws/ng-imago#auto-resize) to parent (fit / cover)**
 
 ## Requirements
 ---
@@ -29,7 +29,7 @@ Download the [production version][min] or the [development version][max].
 ```javascript
 var app = angular.module('app', ['ngImago']);
 ```
-You can also configure the defaults value. See below (Configuration).
+You can also configure the defaults value. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
 
 
 ### HOW TO USE
@@ -50,7 +50,7 @@ Set attibutes for each resolution you want to support, passing inside the attrib
      xlarge="xlarge.jpg"
      medium-portrait="medium-portrait.jpg"  />
 ```
-For the default values for each attribute, please see below (Defaults).
+For the default values for each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#defaults-values)).
 
 **Attention: you can't set the "src" attribute using Ng-Imago.** Why? See below.
 
@@ -83,10 +83,10 @@ You can naturally use the AngularJS templates style to set the attibute's value.
 If you want follow its own rules you can pass to the ng-imago attribute a series of overriding values, for sizes or for settings.
 ```html
 <img ng-imago="{ small:'only screen and (min-width:320px)'}"
-            small="{{url_small}}-override" 
-            medium="{{url_medium}}" 
-            large="{{url_large}}" 
-            xlarge="{{url_xlarge}}" 
+     small="{{url_small}}-override" 
+     medium="{{url_medium}}" 
+     large="{{url_large}}" 
+     xlarge="{{url_xlarge}}" 
             />
 ```
 
