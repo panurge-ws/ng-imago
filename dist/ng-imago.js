@@ -503,7 +503,7 @@
                 priority: 950, // set to 1000 so ImageResize loader can execute after
                 //replace:true,
                 scope: true,
-                restrict: 'A',
+                restrict: 'EA',
                 controller: ["$scope", "$element", "$attrs", "$transclude",
                     function($scope, $element, $attrs, $transclude) {
 

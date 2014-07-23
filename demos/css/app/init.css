@@ -94,3 +94,6 @@ div {
 div img{
 	position:absolute;
 }
+ng-imago{
+	display: block;
+}
