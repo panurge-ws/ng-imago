@@ -5,9 +5,9 @@
 
 Currently it's focused on:
 
-1. **[Multi resolutions sources](https://github.com/panurge-ws/ng-imago#multi-resolutions-sources) (responsive images)**
-2. **[Sequential loading](https://github.com/panurge-ws/ng-imago#sequential-loading) (automatic or manual)**
-3. **[Auto-resize](https://github.com/panurge-ws/ng-imago#auto-resize) to parent (fit / cover)**
+1. **[Multi resolutions sources](https://github.com/panurge-ws/ng-imago#1-multi-resolutions-sources) (responsive images)**
+2. **[Sequential loading](https://github.com/panurge-ws/ng-imago#2-sequential-loading) (automatic or manual)**
+3. **[Auto-resize](https://github.com/panurge-ws/ng-imago#3-auto-resize) to parent (fit / cover)**
 
 ## Requirements
 ---
@@ -123,7 +123,7 @@ If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you c
 
 
 
-## Sequential loading
+## 2. Sequential loading
 ---
 ### (Complete documentation coming soon)
 ### Automatic queueing (AKA The "queue-index" attribute )
@@ -216,7 +216,7 @@ $rootScope.$on("$ngImagoQueueIndexComplete", function(event, index, data, elemen
 
 ```
 
-## Auto resize
+## 3. Auto resize
 ---
 You can set an attibute "imago-resize" with self-explanatory object values.
 ```html
