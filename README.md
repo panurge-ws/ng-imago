@@ -121,7 +121,7 @@ If you set an attribute (queue-index="1"), the images with that attributes will 
       medium="delayed-medium.jpg" />
 ```
 ### Manual queueing / loading
-You can set an attribute (auto-load="false") which prevent the image to be loaded. You can load it later, as you need, with some methods.
+You can set an attribute (auto-load="false") which prevents the image to be immediately loaded. You can load it later, as you need, with some methods.
 ```html
 <img  ng-imago 
       auto-load="false" 
@@ -175,7 +175,7 @@ $rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element
 
 ## Auto resize
 ---
-### (Complete documentation coming soon)
+**(Complete documentation coming soon)**
 Set an attibute "imago-resize" with self-explanatory object values.
 ```html
 <div style="width:500px;height:300px">
@@ -187,7 +187,7 @@ Set an attibute "imago-resize" with self-explanatory object values.
 
 ## Configuration
 ---
-### (Complete documentation coming soon)
+**(Complete documentation coming soon)**
 
 ```javascript
 var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
@@ -207,7 +207,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 ## Defaults values
 ---
 ## Default sizes
-### (Complete documentation coming soon)
+**(Complete documentation coming soon)**
 
 ```javascript
 'default' => 'only screen and (min-width: 1px)'
