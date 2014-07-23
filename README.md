@@ -73,7 +73,7 @@ If you set an attibute with a "-portrait" suffix, Ng-Imago will load that source
 ```
 ### **Angular templates**
 
-You can naturally use the AngularJS templates style to set the attibute's value. They are bindable values, until the image is loaded. (See settings _unbindwhenloaded_ below to further details).
+You can naturally use the AngularJS templates style to set the attibute's value. They are bindable values, until the image is loaded. (See settings unbind_when_loaded below for further details).
 ```html
 <img ng-imago  
      medium="{{url_medium}}"  
