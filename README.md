@@ -215,7 +215,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
 'small'   => 'only screen and (min-width: 480px)'
 'medium'  => 'only screen and (min-width: 768px)'
 'large'   => 'only screen and (min-width: 1280px)'
-'xlarge'  => 'only screen and (min-width:1281px)'
+'xlarge'  => 'only screen and (min-width: 1440px)'
 ```
 
 ## Default settings
