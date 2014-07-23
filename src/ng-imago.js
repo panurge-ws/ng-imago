@@ -533,11 +533,11 @@
 
 
                         // utility function: used externally by other modules
-                        $scope.load = function(forceRecalcUrl, forceReload) {
+                        $scope.load = function(forceRecalcUrl) {
                             if (!$scope.initialized){
                                 init();
                             }
-                            startLoadImage(forceRecalcUrl, forceReload);
+                            startLoadImage(forceRecalcUrl, true);
                         };
 
                         // @ private

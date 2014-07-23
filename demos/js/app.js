@@ -55,6 +55,9 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 			
 			angular.element(img).attr('auto-load',"true");
 
+			// or exactly equivalent
+			//angular.element(img).scope().load();
+
 		}
 
 		$scope.loadImageByClass = function(className)
