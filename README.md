@@ -226,6 +226,9 @@ You can set an attibute "imago-resize" with self-explanatory object values.
        imago-resize="{scale:'cover', center:true}" />
 </div>
 ```
+Ng-Imago will resize the image to the image's parent. You can set an additional param _'container':'window'_ if you want to scale it to the window's dimensions.
+
+
 
 ## Configuration
 ---
