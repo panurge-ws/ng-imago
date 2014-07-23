@@ -98,6 +98,15 @@ If you want that an image follows its own rules, you can pass to the ng-imago at
      medium="{{url_medium}}" 
      large="{{url_large}}" 
      xlarge="{{url_xlarge}}"  />
+     
+OR if you use a directive tag
+
+<ng-imago override="{ small:'only screen and (min-width:320px)', loaded_class:'my-loaded-class' }"
+     small="{{url_small}}-override-loaded-when-min-width-is-320px" 
+     medium="{{url_medium}}" 
+     large="{{url_large}}" 
+     xlarge="{{url_xlarge}}"></ng-imago>  
+             
 ```
 
 ### **Using with other tags or with ng-imago tag**
@@ -117,7 +126,7 @@ You can use the directive ng-imago also in elements that aren't "img" tags, as "
      imago-resize="{scale:'cover', center:true}">
  </ng-imago>
 ```
-If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you can't control sequential loading...
+Are you wondering why? "Can't we use simply the CSS?" Yes, you can, but you can't control sequential loading... 
 
 
 
