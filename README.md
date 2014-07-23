@@ -32,6 +32,7 @@ var app = angular.module('app', ['ngImago']);
 You can also configure the defaults value. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
 
 
+
 ### HOW TO USE
 ***
 
@@ -56,7 +57,7 @@ For the default values for each attribute, please see below ([Defaults](https://
 
 ### **Pixel density support (Retina)**
 
-If you want to support Pixel density, you can simply set two URLs (comma separated) in the attribute: if one of them has the "**@2x**" suffix in the name, Ng-Imago will load that in screen with pixel density > 1.
+If you want to support different Pixel densities, you can simply set two URLs (comma separated) in the attribute: if one of them has the "**@2x**" suffix in the name, Ng-Imago will load that in screens with pixel density > 1.
 ```html
 <img ng-imago
      medium="default.jpg,default@2x.jpg"  />
@@ -64,8 +65,8 @@ If you want to support Pixel density, you can simply set two URLs (comma separat
 ### **Orientation support**
 _(Really beta... anyway...)_
 If you set an attibute with a "-portrait" suffix, Ng-Imago will load that source if: 
-1) the resolution matches the attribute (medium => (min-width: 768px) and 
-2) if the device orientation is portrait 
+1. the resolution matches the attribute (medium => (min-width: 768px) and
+2. if the device orientation is portrait 
 ```html
 <img ng-imago  
      medium="medium.jpg"  
@@ -73,7 +74,7 @@ If you set an attibute with a "-portrait" suffix, Ng-Imago will load that source
 ```
 ### **Angular templates**
 
-You can naturally use the AngularJS templates style to set the attibute's value. They are bindable values, until the image is loaded. (See settings unbind_when_loaded below for further details).
+You can naturally use the AngularJS templates style to set the attibute's value. Those values are bindable, at least until the image is loaded. (See the [default settings unbind_when_loaded](https://github.com/panurge-ws/ng-imago#default-settings) below for further details).
 ```html
 <img ng-imago  
      medium="{{url_medium}}"  
@@ -91,7 +92,7 @@ If you want follow its own rules you can pass to the ng-imago attribute a series
 ```
 
 ### **Using with no img elements**
-You can use the directive ng-imago also in element different from "img", as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style.
+You can use the directive ng-imago also in elements that aren't "img" tag, as "div", "span", etc... In few words, all the elements that accept a background-image style. The module will load an Image object and then it will pass the url to the background-image CSS style.
 ```html
 <div style="width:500px;height:200px;overflow:hidden;"
      ng-imago
@@ -113,7 +114,7 @@ If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you c
 ### (Complete documentation coming soon)
 ### Automatic queueing (AKA The "queue-index" attribute )
 The queue-index attribute helps you to load images sequentially. It creates a queue of images based on the attribute's value.
-If you set an attribute (queue-index="1"), the images with that attributes will be loaded after all the other images with no queue attribute (or with "queue-index=0") have been loaded.
+If you set an attribute (queue-index="1"), the images with that attributes will be loaded after all the other images with no queue attribute (or with "queue-index=0") have been loaded. And so on... **Attention**: to start the loading sequence, you must insert at least a queue-index="0" image (or omit the attribute).
 ```html
 <img  ng-imago 
       queue-index="1"
@@ -132,7 +133,7 @@ You can set an attribute (auto-load="false") which prevents the image to be imme
       default="delayed-default.jpg" 
       medium="delayed-medium.jpg" />
 ```
-You can use Javascript method provided in the AngularJS service called 'ngImagoService'. You can load the image above with the following methods
+You can use Javascript methods provided in the service called 'ngImagoService'. You can load the image above with the following methods. Inject the service in your controller or directive.
 ```javascript
 // load images with attibutes and values
 ngImagoService.loadByAttribute("load-group", "group1");
