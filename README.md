@@ -115,7 +115,8 @@ If you are wondering why? "Can't we use simply the CSS?" Yes, you can, but you c
 The queue-index attribute helps you to load images sequentially. It creates a queue of images based on the attribute's value.
 If you set an attribute (queue-index="1"), the images with that attributes will be loaded after all the other images with no queue attribute (or with "queue-index=0") have been loaded.
 ```html
-<img  ng-imago queue-index="1"
+<img  ng-imago 
+      queue-index="1"
       default="delayed-default.jpg" 
       medium="delayed-medium.jpg" />
 ```
@@ -179,8 +180,8 @@ Set an attibute "imago-resize" with self-explanatory object values.
 ```html
 <div style="width:500px;height:300px">
   <img ng-imago 
-     medium="{{url_medium}}"
-     imago-resize="{scale:'cover', center:true}" />
+       medium="{{url_medium}}"
+       imago-resize="{scale:'cover', center:true}" />
 </div>
 ```
 
