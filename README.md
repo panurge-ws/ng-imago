@@ -11,11 +11,8 @@ Currently it's focused on:
 
 ## Requirements
 ---
-Insert AngularJS in your head tags. Eg.:
-```html
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
-```
-And now the boring note about IE8. This library uses matchMedia detection, not supported by IE8. You can use a [polyfill](https://github.com/paulirish/matchMedia.js/), if you need supporting IE8.
+- [AngularJS](http://angularjs.org/)
+- [matchMedia polyfill](https://github.com/paulirish/matchMedia.js/) (only if you need to support "browsers" [without native matchMedia](http://caniuse.com/matchmedia) detection. Yes, IE8...
 
 
 ## Install
@@ -26,13 +23,13 @@ Download the [production version][min] or the [development version][max].
 [max]: https://raw.github.com/aboschini/ng-imago/master/dist/ng-imago.js
 **HTML:** import the script in your HTML
 ```html
-<script src="[path_to_library]/ng-imago.js"></script>
+<script src="[path_to_library]/ng-imago.min.js"></script>
 ```
-**Javascript code:** inject the module in Angular
+**Javascript:** inject the module in Angular
 ```javascript
 var app = angular.module('app', ['ngImago']);
 ```
-You can also configure the default values. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
+Here you can also configure the default values. See below ([Configuration](https://github.com/panurge-ws/ng-imago#configuration)).
 
 
 
@@ -303,8 +300,13 @@ container: 'parent' // ["parent" | "window"]
 
 
 ## This project is currently in beta version. Use it at your own risk.
-### Reporting issues is much appreciated.
-### Wait some other few days (or ask) before pulling requests.
+---
+## Contributors
+---
+A special thanks goes to Thinking About to have supported the initial draft of this project.
+
+**Reporting issues is much appreciated.
+Please, wait some other days (or ask) before pulling requests.**
 
 ## Thanks.
 
