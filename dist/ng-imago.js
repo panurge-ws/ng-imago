@@ -511,8 +511,7 @@
         function(ngImagoQueue, ngImagoAttributeParser, $rootScope, $log) {
 
             return {
-                priority: 950, // set to 1000 so ImageResize loader can execute after
-                //replace:true,
+                //priority: 950, // TODO test with other directive if there are confilcts
                 scope: true,
                 restrict: 'EA',
                 controller: ["$scope", "$element", "$attrs", "$transclude",
@@ -850,7 +849,6 @@
 
         function($window, $rootScope) {
             return {
-
                 require: 'ngImago',
                 controller: ["$scope", "$element", "$attrs",
                     function($scope, $element, $attrs) {
