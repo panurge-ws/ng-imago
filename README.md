@@ -167,7 +167,7 @@ angular.element(img).attr('auto-load',"true");
 //angular.element(img).scope().load();
 
 ```
-## Manual load + automatic queue? Yes.
+### Manual load + automatic queue? Yes.
 You can mix the two methods setting _auto-load=false_ and _queue-index_. If you have a series of images with _auto-load="false"_ and several _queue-index_ values, at the time you will load that group, it will be loaded sequentially.
 E.g.:
 ```html
