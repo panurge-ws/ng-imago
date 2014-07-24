@@ -52,7 +52,7 @@ You can choose two alternative methods:
      large="large.jpg"
      xlarge="xlarge.jpg"  />
 ```
-2. **A properties object**: set the attibute "sources" with a JSON object with size and url path(s):
+2. **A properties object**: set the attibute "sources" with a JSON object with size and image path(s):
 ```html
 <img ng-imago
      sources="{'default':'default.jpg', 'medium':'medium.jpg'}" />
