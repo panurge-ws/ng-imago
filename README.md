@@ -42,7 +42,8 @@ Here you can also configure the default values. See below ([Configuration](https
 
 In your HTML, insert a **img** tag and add the **ng-imago** directive. 
 You can choose two alternative methods:
-1. With attributes: set attibutes for each resolution you want to support, passing inside the attribute the url of the image:
+
+1. **Attributes**: set attibutes for each resolution you want to support, passing inside the attribute the url of the image:
 ```html
 <img ng-imago      
      default="default.jpg" 
@@ -51,7 +52,7 @@ You can choose two alternative methods:
      large="large.jpg"
      xlarge="xlarge.jpg"  />
 ```
-2. With properties object: set the attibute "sources" with a JSON object with size and url path(s):
+2. **A properties object**: set the attibute "sources" with a JSON object with size and url path(s):
 ```html
 <img ng-imago
      sources="{'default':'default.jpg', 'medium':'medium.jpg'}" />
@@ -316,7 +317,6 @@ container: 'parent' // ["parent" | "window"]
 ---
 ## Contributors
 ---
-A special thanks goes to Thinking About to have supported the initial draft of this project.
 
 **Reporting issues is much appreciated.
 Please, wait some other days (or ask) before pulling requests.**
