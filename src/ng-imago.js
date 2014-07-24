@@ -22,7 +22,7 @@
         // Append a random string to the URL to force reload
         avoid_cache: true,
         // Remove the bindings of the attributes when the images is loaded for performance reasons
-        unbind_when_loaded: false,
+        unbind_when_loaded: true,
         // The name of the class added to the image when loaded
         loaded_class: "ng-imago-loaded",
         // The name of the class added to the image while it's loading
