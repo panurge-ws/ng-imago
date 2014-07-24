@@ -41,7 +41,8 @@ Here you can also configure the default values. See below ([Configuration](https
 **Use ng-imago to load images according to a given resolution (or media query), exactly as you usually do with Media queries inside CSS.**
 
 In your HTML, insert a **img** tag and add the **ng-imago** directive. 
-Set attibutes for each resolution you want to support, passing inside the attribute the url of the image.
+You can choose two alternative methods:
+1. With attributes: set attibutes for each resolution you want to support, passing inside the attribute the url of the image:
 ```html
 <img ng-imago      
      default="default.jpg" 
@@ -50,11 +51,19 @@ Set attibutes for each resolution you want to support, passing inside the attrib
      large="large.jpg"
      xlarge="xlarge.jpg"  />
 ```
-Each attribute checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load the image's url within the attribute.
+2. With properties object: set the attibute "sources" with a JSON object with size and url path(s):
+```html
+<img ng-imago
+     sources="{'default':'default.jpg', 'medium':'medium.jpg'}" />
+```
+Each attribute/property checks for a corrispettive media query value (e.g.: 'medium' checks for 'only screen and (min-width: 768px)'. If the query matches, it will load the image's url within the attribute.
 
 For the default values of each attribute, please see below ([Defaults](https://github.com/panurge-ws/ng-imago#default-values)).
 
+If "sources" object is defined, attributes values will be ignored.
+
 You can override the value of each attribute for a [single image](https://github.com/panurge-ws/ng-imago#overriding-single-image), or you can override them [globally](https://github.com/panurge-ws/ng-imago#configuration). Furthermore, you can also add your customized attributes.
+
 
 **Attention: you can't set the "src" attribute using Ng-Imago, otherwise, the sequential loading won't work properly.**
 
@@ -64,7 +73,9 @@ You can override the value of each attribute for a [single image](https://github
 If you want to support different pixel densities, you can simply set two urls (comma separated) in the attribute: if one of them has the "**@2x**" suffix in the name, Ng-Imago will load it in screens with pixel density > 1.
 ```html
 <img ng-imago
-     medium="default.jpg,default@2x.jpg"  />
+     medium="medium.jpg,medium@2x.jpg"  />
+<img ng-imago
+     sources="{'medium':'medium.jpg,medium@2x.jpg'}"  />
 ```
 
 ### **Orientation support**
@@ -85,6 +96,8 @@ You can naturally use the AngularJS templates style to set the attibute's value.
 <img ng-imago  
      medium="{{url_medium}}"  
      large="{{url_large}}"  />
+<img ng-imago
+     sources="{{my_sources_object}}"  />
 ```
 
 ### **Overriding single image**
@@ -96,7 +109,7 @@ If you want that an image follows its own rules, you can pass to the ng-imago at
      large="{{url_large}}" 
      xlarge="{{url_xlarge}}"  />
      
-OR if you use a directive tag
+Or, if you use a directive tag, insert the values inside an "override" attribute:
 
 <ng-imago override="{ small:'only screen and (min-width:320px)', loaded_class:'my-loaded-class' }"
      small="{{url_small}}-override-loaded-when-min-width-is-320px" 
