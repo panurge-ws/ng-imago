@@ -22,7 +22,7 @@
         // Append a random string to the URL to force reload
         avoid_cache: true,
         // Remove the bindings of the attributes when the images is loaded for performance reasons
-        unbind_when_loaded: true,
+        unbind_when_loaded: false,
         // The name of the class added to the image when loaded
         loaded_class: "ng-imago-loaded",
         // The name of the class added to the image while it's loading
@@ -161,32 +161,35 @@
 
             ngImagoAttributeParser.mediaQueries = [];
 
-            ngImagoAttributeParser.calculateUrl = function(attrs, options) {
+            ngImagoAttributeParser.calculateUrl = function(sources, options) {
 
 
-                var source = ngImagoAttributeParser.getUrlForAttrs(attrs, options);
+                var source = ngImagoAttributeParser.getUrlForSources(sources, options);
 
                 if (source === "") {
-                    $log.error("[ngImagoModule] -> no-url-for-image", attrs);
+                    $log.error("[ngImagoModule] -> no-url-for-image", sources);
                     return false;
                 }
 
                 return source;
             };
 
-            ngImagoAttributeParser.getUrlForAttrs = function(attrs, options) {
+            ngImagoAttributeParser.getUrlForSources = function(sources, options) {
 
                 var attrMatching = null,
                     defaultAttr = null;
 
-                for (var attr in attrs) {
+                for (var attr in sources) {
 
-                    if (!angular.isUndefined(attr) && !angular.isUndefined(attrs[attr])) {
+                    if (!angular.isUndefined(sources[attr])) {
+
 
                         var attrClean = attr.replace('Portrait', '');
                         var searchPortrait = attr.indexOf("Portrait") > -1;
 
                         var requestQuerySet = _getQuerySetByAttr(attrClean);
+
+                        //console.log(sources, attr, requestQuerySet)
 
                         if (requestQuerySet != null) {
                             var query = "";
@@ -210,16 +213,16 @@
                             if (searchPortrait) {
 
                                 if (mediaQueryRequested.matches && ngImagoAttributeParser.portraitQuery.matches) {
-                                    attrMatching = attrs[attr];
+                                    attrMatching = sources[attr];
                                 } else if (attrMatching == null) {
-                                    defaultAttr = attrs[attr];
+                                    defaultAttr = sources[attr];
                                 }
                             } else {
 
                                 if (mediaQueryRequested.matches) {
-                                    attrMatching = attrs[attr];
+                                    attrMatching = sources[attr];
                                 } else if (attrMatching == null) {
-                                    defaultAttr = attrs[attr];
+                                    defaultAttr = sources[attr];
                                 }
                             }
 
@@ -236,7 +239,7 @@
                 if (attrMatching === null || angular.isUndefined(attrMatching)) {
                     return "";
                 } else {
-                    return ngImagoAttributeParser.parseAttr(attrMatching, attrs, options);
+                    return ngImagoAttributeParser.parseAttr(attrMatching, sources, options);
                 }
 
             };
@@ -283,7 +286,7 @@
             };
 
 
-            ngImagoAttributeParser.parseAttr = function(imageUrl, attrs, options) {
+            ngImagoAttributeParser.parseAttr = function(imageUrl, sources, options) {
                 var _outUrl = "";
 
                 if (imageUrl.indexOf(",") > -1) {
@@ -512,15 +515,27 @@
 
     /// DIRECTIVE ///
 
+
     ngImagoModule.directive('ngImago', ['ngImagoQueue', 'ngImagoAttributeParser', '$rootScope', '$log',
         function(ngImagoQueue, ngImagoAttributeParser, $rootScope, $log) {
 
+            /*var scopeObject = {
+                autoLoad:"@",
+                queueIndex:"@",
+                override:"@",
+                sources:"@",
+            };
+
+            for (var i = 0; i < default_sizes.length; i++) {
+                scopeObject[default_sizes[i].attr] = "@";
+            };*/
+
             return {
                 //priority: 950, // TODO test with other directive if there are confilcts
-                scope: true,
+                scope: {},
                 restrict: 'EA',
-                controller: ["$scope", "$element", "$attrs", "$transclude",
-                    function($scope, $element, $attrs, $transclude) {
+                controller: ["$scope", "$element", "$attrs",
+                    function($scope, $element, $attrs) {
 
                         // @ public
 
@@ -536,6 +551,12 @@
                         // it's used to override default options
                         $scope.options = {};
 
+                        // the sources set in the directive
+                        // can be either a list of attributes or a single object 
+                        // passed to sources=""
+                        $scope.sourcesSet = {};
+
+
                         // stores the type of the element [img|anything else(a, div, span, ecc.)]
                         // if we have <img> tag we load it directy the with the "src" prop
                         // otherwise we set the backgroung-image style
@@ -544,15 +565,44 @@
 
                         // utility function: used externally by other modules
                         $scope.load = function(forceRecalcUrl) {
-                            if (!$scope.initialized){
+                            if (!$scope.initialized) {
                                 init();
                             }
                             startLoadImage(forceRecalcUrl, true);
                         };
 
+                        // @public API
+                        this.isLoaded = function() {
+                            return $scope.loaded;
+                        };
+
+                        this.getOptions = function() {
+                            return $scope.options;
+                        };
+
+                        this.getSource = function() {
+                            return $scope.source;
+                        };
+
+                        this.getSourcesSet = function() {
+                            return $scope.sourcesSet;
+                        };
+
+                        this.getElementType = function() {
+                            return $scope.elementType;
+                        };
+
                         // @ private
 
-                        var _image;
+                        var _image,
+                            _request_load_listener,
+                            _watch_attrs_fn,
+                            _watch_resp_fn,
+                            _source_type;
+
+                        // calculate suddenly these values
+                        // these can be available to other directives of the modules
+
                         if ($element[0].tagName.toUpperCase() === "IMG") {
                             $scope.elementType = "IMG";
                             _image = $element;
@@ -561,43 +611,9 @@
                             _image = angular.element(new Image());
                         }
 
-                        // listeners and watcher functions
-                        var _request_load_listener, _watch_attrs_fn, _watch_resp_fn;
-
                         // check if src is empty
                         if (!angular.isUndefined($attrs.src)) {
                             $log.error("[ngImagoModule] -> You can't use ngImagoMng module with 'src' attribute in the <img> tag. Remove src='" + $attrs.src + "'");
-                        }
-
-                        // shortcut fns 
-                        function _getSetting(key) {
-                            return getSetting(key, $scope.options);
-                        }
-
-                        function setOptions() {
-                            if (!angular.isUndefined($attrs.override)) {
-                                $scope.options = $attrs.override === "" ? {} : $scope.$eval($attrs.override);
-                            }
-                            else{
-                                $scope.options = angular.isUndefined($attrs.ngImago) || $attrs.ngImago === "" ? {} : $scope.$eval($attrs.ngImago);
-                            }
-                            //console.log($scope.options);
-                        }
-
-                        function calcUrl() {
-
-                            $scope.options.source_to_set = ngImagoAttributeParser.getUrlForAttrs($attrs, $scope.options);
-
-                            if ($scope.options.source_to_set === "") {
-                                $log.error("[ngImagoModule] -> no-url-for-image", $attrs);
-                                return false;
-                            }
-
-                            if ($scope.source === $scope.options.source_to_set) {
-                                return false;
-                            }
-
-                            return $scope.options.source_to_set;
                         }
 
                         function init() {
@@ -615,12 +631,13 @@
 
                             setOptions();
 
+
                             $scope.initialized = true;
 
                             $scope.options.auto_load = $attrs.autoLoad === "false" ? false : true;
 
                             $scope.options.queue_index = angular.isUndefined($attrs.queueIndex) ? 0 : Number($attrs.queueIndex);
-                            $scope.options.source_to_set = ngImagoAttributeParser.calculateUrl($attrs, $scope.options);
+                            $scope.options.source_to_set = ngImagoAttributeParser.calculateUrl($scope.sourcesSet, $scope.options);
 
                             if ($scope.options.source_to_set === false) { // no resource has been found
                                 return;
@@ -648,6 +665,32 @@
                             }
 
 
+                        }
+
+                        function setOptions() {
+
+                            if (!angular.isUndefined($attrs.override)) {
+                                $scope.options = $attrs.override === "" ? {} : $scope.$eval($attrs.override);
+                            } else {
+                                $scope.options = angular.isUndefined($attrs.ngImago) || $attrs.ngImago === "" ? {} : $scope.$eval($attrs.ngImago);
+                            }
+                            //console.log($scope.options);
+                        }
+
+                        function calcUrl() {
+
+                            $scope.options.source_to_set = ngImagoAttributeParser.calculateUrl($scope.sourcesSet, $scope.options);
+
+                            if ($scope.options.source_to_set === "") {
+                                $log.error("[ngImagoModule] -> no-url-for-image", $attrs);
+                                return false;
+                            }
+
+                            if ($scope.source === $scope.options.source_to_set) {
+                                return false;
+                            }
+
+                            return $scope.options.source_to_set;
                         }
 
 
@@ -785,7 +828,6 @@
 
                             setSource($scope.options.source_to_set, _getSetting('avoid_cache'));
 
-
                         }
 
                         function setSource(source_to_set, avoid_cache) {
@@ -800,7 +842,7 @@
                         }
 
 
-                        // media query listener
+                        // media query change listener
                         $rootScope.$on(EVENT_MEDIA_QUERY_CHANGED, function() {
                             if ($scope.initialized) {
                                 startLoadImage(true, ($scope.options.auto_load || $scope.loaded));
@@ -811,14 +853,15 @@
                         // attributes watchers
 
                         _watch_attrs_fn = $scope.$watch(function() {
-                            return [$element.attr('auto-load'), $element.attr('queue-index')];
+                            return [$element.attr('auto-load'), $element.attr('queue-index'), $element.attr('override')];
                         }, function(nv, ov) {
 
+                            $attrs.autoLoad = nv[0];
+                            $attrs.queueIndex = nv[1];
+                            $attrs.override = nv[2];
+
+
                             if ($scope.initialized) {
-
-                                $attrs.autoLoad = nv[0];
-                                $attrs.queueIndex = nv[1];
-
                                 init();
                             }
                         }, true);
@@ -826,28 +869,38 @@
 
                         _watch_resp_fn = $scope.$watch(function() {
 
-                            var listenerAttr = [];
+                            var listenerAttr = [$element.attr('sources')];
 
                             for (var i = 0; i < default_sizes.length; i++) {
                                 listenerAttr.push($element.attr(default_sizes[i].attr));
                             }
+
                             return listenerAttr;
 
                         }, function(nv, ov) {
-                            if ($scope.initialized) {
+                            // use sources if defined
+                            if (!angular.isUndefined(nv[0])) {
+                                $scope.sourcesSet = $scope.$eval(nv[0]);
+                            } else { // use sizes attributes
 
                                 for (var i = 0; i < default_sizes.length; i++) {
-                                    $attrs[default_sizes[i].attr] = nv[i];
+                                    $scope.sourcesSet[default_sizes[i].attr] = nv[i+1];
                                 }
-
+                            }
+                            
+                            if ($scope.initialized) {
                                 // TODO remove from queue old url
                                 startLoadImage(true, $scope.options.auto_load || $scope.loaded);
 
                             } else {
-
                                 init();
                             }
                         }, true);
+
+                        // shortcut fns 
+                        function _getSetting(key) {
+                            return getSetting(key, $scope.options);
+                        }
 
                     }
                 ]
@@ -857,117 +910,119 @@
         }
     ]);
 
+
+
+
     ngImagoModule.directive('imagoResize', ["$window", "$rootScope",
 
         function($window, $rootScope) {
             return {
+
+                transclude: true,
+                restrict: 'A',
                 require: 'ngImago',
-                controller: ["$scope", "$element", "$attrs",
-                    function($scope, $element, $attrs) {
-                        var _options = angular.isUndefined($attrs.imagoResize) ? {} : $scope.$eval($attrs.imagoResize);
+                link: function(scope, iElement, iAttrs, controller) {
+
+                    var _options = angular.isUndefined(iAttrs.imagoResize) ? {} : scope.$eval(iAttrs.imagoResize);
 
 
-                        
+                    scope.$watch(function() {
+                        return controller.isLoaded();
+                    }, function(nv, ov) {
+                        if (nv === true) {
+                            if (controller.getElementType() === 'NO-IMG') {
 
-                            
-                        
+                                var scaleMode = getSetting('scale', _options);
+                                var center = getSetting('center', _options);
 
-                        $scope.$watch('loaded', function(nv, ov) {
-                            if (nv === true) {
-                                if ($scope.elementType === 'NO-IMG') {
-                                    
-                                    var scaleMode = getSetting('scale', _options);
-                                    var center = getSetting('center', _options);
-                                    
-                                    if (scaleMode === "cover" || scaleMode === "fit") {
-                                        $element.css('background-size', scaleMode);
-                                    }
-
-                                    if (center === true) {
-                                        $element.css('background-position', 'center center');
-                                    }
+                                if (scaleMode === "cover" || scaleMode === "fit") {
+                                    iElement.css('background-size', scaleMode);
                                 }
-                                else{
-                                    layout();
-                                }
-                            }
-                        });
-
-                        function layout() {
-                            var scaleMode = getSetting('scale', _options);
-                            var center = getSetting('center', _options);
-
-                            // TODO allow other methods to select the parent
-                            if (scaleMode === "cover" || scaleMode === "fit" || center === true) {
-
-                                var container = getSetting('container', _options);
-
-                                var tW = $element[0].width,
-                                    tH = $element[0].height;
-
-                                if (container === "parent") {
-                                    var parent = $element.parent();
-                                    if (parent && parent.length > 0) {
-                                        var parComW = parseInt(getStyle(parent[0], "width"), 10);
-                                        var parComH = parseInt(getStyle(parent[0], "height"), 10);
-                                        tW = parComW;
-                                        tH = parComH;
-                                    }
-
-                                } else if (container === "window") {
-                                    tW = $window.innerWidth;
-                                    tH = $window.innerHeight;
-                                }
-
-                                var new_dim = resizeImageWithRatio($element[0].width, $element[0].height, tW, tH, scaleMode, center);
-
-                                $element[0].width = new_dim.width;
-                                $element[0].height = new_dim.height;
-
-                                var position = getStyle($element[0], 'position');
 
                                 if (center === true) {
-                                    if (position === "fixed" || position === "absolute") {
-                                        $element.css({
-                                            top: new_dim.top + "px",
-                                            left: new_dim.left + "px"
-                                        });
-                                    } else {
-                                        $element.css({
-                                            marginTop: new_dim.top + "px",
-                                            marginLeft: new_dim.left + "px"
-                                        });
-                                    }
+                                    iElement.css('background-position', 'center center');
                                 }
-                            }
-
-                            $rootScope.$broadcast(EVENT_IMG_RESIZE, {
-                                url: $scope.options.source_to_set,
-                                elem: $element,
-                            });
-
-                        }
-
-                        // TODO param windows or parent
-                        $rootScope.$on(EVENT_WINDOW_RESIZE, function() {
-
-                            if ($scope.loaded) {
+                            } else {
                                 layout();
                             }
+                        }
+                    });
 
+                    function layout() {
+                        var scaleMode = getSetting('scale', _options);
+                        var center = getSetting('center', _options);
+
+                        // TODO allow other methods to select the parent
+                        if (scaleMode === "cover" || scaleMode === "fit" || center === true) {
+
+                            var container = getSetting('container', _options);
+
+                            var tW = iElement[0].width,
+                                tH = iElement[0].height;
+
+                            if (container === "parent") {
+                                var parent = iElement.parent();
+                                if (parent && parent.length > 0) {
+                                    var parComW = parseInt(getStyle(parent[0], "width"), 10);
+                                    var parComH = parseInt(getStyle(parent[0], "height"), 10);
+                                    tW = parComW;
+                                    tH = parComH;
+                                }
+
+                            } else if (container === "window") {
+                                tW = $window.innerWidth;
+                                tH = $window.innerHeight;
+                            }
+
+                            var new_dim = resizeImageWithRatio(iElement[0].width, iElement[0].height, tW, tH, scaleMode, center);
+
+                            iElement[0].width = new_dim.width;
+                            iElement[0].height = new_dim.height;
+
+                            var position = getStyle(iElement[0], 'position');
+
+                            if (center === true) {
+                                if (position === "fixed" || position === "absolute") {
+                                    iElement.css({
+                                        top: new_dim.top + "px",
+                                        left: new_dim.left + "px"
+                                    });
+                                } else {
+                                    iElement.css({
+                                        marginTop: new_dim.top + "px",
+                                        marginLeft: new_dim.left + "px"
+                                    });
+                                }
+                            }
+                        }
+
+                        $rootScope.$broadcast(EVENT_IMG_RESIZE, {
+                            url: controller.getSource(),
+                            elem: iElement,
                         });
 
-                        if (!resize_initialized) {
-
-                            $window.onresize = function() {
-                                // TODO set a debounce
-                                $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
-                            };
-
-                            resize_initialized = true;
-                        }
                     }
-                ]
+
+                    // TODO param windows or parent
+                    $rootScope.$on(EVENT_WINDOW_RESIZE, function() {
+
+                        if (controller.isLoaded()) {
+                            layout();
+                        }
+
+                    });
+
+                    if (!resize_initialized) {
+
+                        $window.onresize = function() {
+                            // TODO set a debounce
+                            $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
+                        };
+
+                        resize_initialized = true;
+                    }
+                }
+
             };
         }
     ]);

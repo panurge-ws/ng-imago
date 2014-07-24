@@ -36,14 +36,13 @@
     &lt;img  
             ng-imago 
             
-            <strong>default</strong>="http://www.placehold.it/320x100&text=default, http://www.placehold.it/320x200&text=default-<strong>@2x</strong>" 
-            <strong>small</strong>="http://www.placehold.it/320x100&text=small, http://www.placehold.it/320x200&text=small-<strong>@2x</strong>" 
-            
-            <strong>custom</strong>="http://www.placehold.it/420x100&text=custom"
+            default="http://www.placehold.it/320x100&text=default,http://www.placehold.it/320x200&text=default-@2x" 
+            small="http://www.placehold.it/320x100&text=small,http://www.placehold.it/320x200&text=small-@2x" 
+            medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x"  
+            large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
+            xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
 
-            <strong>medium</strong>="http://www.placehold.it/420x100&text=medium, http://www.placehold.it/420x200&text=medium-<strong>@2x</strong>" 
-            <strong>large</strong>="http://www.placehold.it/620x100&text=large, http://www.placehold.it/420x200&text=large-<strong>@2x</strong>" 
-            <strong>xlarge</strong>="http://www.placehold.it/720x100&text=xlarge,  http://www.placehold.it/720x200&text=xlarge-<strong>@2x</strong>"
+            medium-portrait="http://www.placehold.it/420x100&text=medium-portrait"
             
              /&gt;</pre>
     <img
@@ -51,15 +50,24 @@
             
             default="http://www.placehold.it/320x100&text=default,http://www.placehold.it/320x200&text=default-@2x" 
             small="http://www.placehold.it/320x100&text=small,http://www.placehold.it/320x200&text=small-@2x" 
-            
-            custom="http://www.placehold.it/480x100&text=custom,http://www.placehold.it/320x200&text=custom-@2x" 
-            
-          
             medium="http://www.placehold.it/420x100&text=medium,http://www.placehold.it/420x200&text=medium-@2x"  
             large="http://www.placehold.it/620x100&text=large,http://www.placehold.it/420x200&text=large-@2x" 
             xlarge="http://www.placehold.it/720x100&text=xlarge,http://www.placehold.it/720x200&text=xlarge-@2x"
 
             medium-portrait="http://www.placehold.it/420x100&text=medium-portrait"
+            
+            />
+    <br>
+    <img
+            ng-imago
+            
+            sources="{'default':'http://www.placehold.it/320x100&text=sources-not-bind-default', 'medium':'http://www.placehold.it/320x100&text=sources-not-bind-medium'}"
+            
+             />
+
+    <img
+            ng-imago 
+            sources="{{image_sources}}"
             
              />
   
@@ -69,7 +77,7 @@
     <input type="submit" ng-click="changeUrls()" value="Change to other url values" />
     <pre ng-non-bindable>
     &lt;img 
-            <strong>ng-imago="{'small:'only screen and (min-width:320px)'}"</strong>
+            <strong>ng-imago="{'small':'only screen and (min-width:320px)'}"</strong>
             
             small="{{url_small}}" 
             medium="{{url_medium}}" 
@@ -251,7 +259,7 @@
     &lt;img ng-imago medium="{{url_medium}}"
                 auto-load="false" 
                 class="imag_to_resize" 
-                imago-resize="{scale:'fit', center:false, container:'window'}"  
+                imago-resize="{scale:'cover', center:true}"  
         /&gt;
     </pre>
         <div style="width:500px;height:200px;overflow:hidden;">
@@ -259,7 +267,7 @@
                  auto-load="false"
                  medium="{{url_medium}}" 
                  class="imag_to_resize"
-                 imago-resize="{scale:'fit', center:true}" />
+                 imago-resize="{scale:'cover', center:true}" />
         </div>
 
     <h3>Use ng-imago with no-img tags</h3>
@@ -279,7 +287,7 @@
              imago-resize="{scale:'cover', center:true}">
         </div>
 
-        <ng-imago override="{'loaded_class':'my-loaded-class'}" style="width:500px;height:200px;overflow:hidden;"
+        <ng-imago override="{{override_options}}" style="width:500px;height:200px;overflow:hidden;"
              
              auto-load="false"
              medium="{{url_medium}}"

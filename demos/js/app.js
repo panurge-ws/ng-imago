@@ -9,7 +9,7 @@ var app = angular.module('app', ['ngImago']).config(["ngImagoProvider",
     	// you can use the function as a setter to pass an object with you customized defaults
     	// E.g. defaultsSettings({avoid_cache:true, loaded_class:'my-loaded-class'});
     	// add a custom size attribute with custom media query
-    	ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
+    	//ngImagoProvider.addDefaultSize('custom', 'only screen and (min-width:400px)');
 
     }
 ]);
@@ -21,6 +21,9 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 
 		$scope.groupImages = [{index:"0"},{index:"0"},{index:"1"},{index:"1"},{index:"2"},{index:"2"},{index:"5"}];
 
+		$scope.image_sources = {'default':'http://www.placehold.it/320x100&text=sources-default','medium':'http://www.placehold.it/320x100&text=sources-medium'};
+
+		$scope.override_options = {'loaded_class':'my-loaded-class'};
 		// same url to bind to the atttributes
 		$scope.url_default = "http://www.placehold.it/320x100&text=default";
 		$scope.url_small = "http://www.placehold.it/320x100&text=small";
@@ -35,6 +38,10 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 			$scope.url_medium = "http://www.placehold.it/500x200&text=medium-binding-modified";
 			$scope.url_large = "http://www.placehold.it/600x200&text=large-binding-modified";
 			$scope.url_xlarge = "http://www.placehold.it/700x200&text=xlarge-binding-modified";
+
+			$scope.image_sources = {'default':'http://www.placehold.it/320x100&text=sources-default-binding-modified','medium':'http://www.placehold.it/320x100&text=sources-medium-binding-modified'};
+			$scope.override_options = {'loaded_class':'my-loaded-class-2'};
+
 			//$scope.$digest();
 			//ngImagoService.loadImageById('img4');
 		}
@@ -81,7 +88,7 @@ app.controller('AppCtrl', ['$scope', '$timeout', '$rootScope', 'ngImagoService',
 		});
 
 		$rootScope.$on("$ngImagoQueueIndexComplete",function(event, index, data, element){
-			//console.log("ngImagoQueueIndexComplete", index, data, element);
+			console.log("ngImagoQueueIndexComplete", index, data, element);
 			$scope.logMsg += 'ngImagoQueueIndexComplete -> ' + index + '\n';
 		});
 		
