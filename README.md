@@ -184,7 +184,7 @@ ngImagoService.loadQueueIndex(1234);
 var img = document.getElementById('img_111');
 angular.element(img).attr('auto-load',"true");
 // or exactly equivalent
-//angular.element(img).scope().load();
+//angular.element(img).isolateScope().load();
 
 ```
 ### Manual load + automatic queue? Yes.
@@ -319,7 +319,7 @@ container: 'parent' // ["parent" | "window"]
 ---
 
 **Reporting issues is much appreciated.
-Please, wait some other days (or ask) before pulling requests.**
+Please, wait some other days before pulling requests.**
 
 ## Thanks.
 
