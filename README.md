@@ -7,7 +7,7 @@ Currently it's focused on:
 
 1. **[Multi resolutions sources](https://github.com/panurge-ws/ng-imago#1-multi-resolutions-sources) (responsive images)**
 2. **[Sequential loading](https://github.com/panurge-ws/ng-imago#2-sequential-loading) (automatic or manual)**
-3. **[Auto-resize](https://github.com/panurge-ws/ng-imago#3-auto-resize) to parent (fit / cover)**
+3. **[Auto-resize](https://github.com/panurge-ws/ng-imago#3-auto-resize) to parent (contain / cover)**
 
 ## Requirements
 ---
@@ -128,7 +128,7 @@ You can use the directive ng-imago also in elements that aren't "img" tags, as "
      auto-load="false"
      medium="medium.jpg"
      class="div_to_load"
-     imago-resize="{scale:'fit', center:false}">
+     imago-resize="{scale:'contain', center:false}">
  </div>
  <ng-imago     style="width:500px;height:200px;overflow:hidden;"
      auto-load="false"
@@ -304,7 +304,7 @@ error_class: "ng-imago-error",
 
 // auto-size
 // Scale mode
-scale: 'fit', // [fit | cover]
+scale: 'contain', // [contain | cover]
 // Center the image
 center: true, // center inside the container
 // The container type to scale and/or center the image
