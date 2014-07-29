@@ -948,6 +948,7 @@
                         var center = getSetting('center', _options);
 
                         // TODO allow other methods to select the parent
+                        // TODO save last parent dimensions to avoid recalc on window resizes
                         if (scaleMode === "cover" || scaleMode === "contain" || center === true) {
 
                             var container = getSetting('container', _options);
@@ -1010,7 +1011,7 @@
                     if (!resize_initialized) {
 
                         $window.onresize = function() {
-                            // TODO set a debounce
+                            // TODO set here a debounce
                             $rootScope.$broadcast(EVENT_WINDOW_RESIZE);
                         };
 
