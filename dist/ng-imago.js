@@ -1,4 +1,4 @@
-/*! ng-imago - v0.1.0 - 2014-07-25
+/*! ng-imago - v0.1.0 - 2014-07-29
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
@@ -26,7 +26,7 @@
         error_class: "ng-imago-error",
         // auto-size
         // Scale mode
-        scale: 'fit', // [fit | cover]
+        scale: 'contain', // [contain | cover]
         // Center the image
         center: true, // center inside the container
         // The container type to scale and/or center the image
@@ -879,10 +879,10 @@
                             } else { // use sizes attributes
 
                                 for (var i = 0; i < default_sizes.length; i++) {
-                                    $scope.sourcesSet[default_sizes[i].attr] = nv[i+1];
+                                    $scope.sourcesSet[default_sizes[i].attr] = nv[i + 1];
                                 }
                             }
-                            
+
                             if ($scope.initialized) {
                                 // TODO remove from queue old url
                                 startLoadImage(true, $scope.options.auto_load || $scope.loaded);
@@ -930,7 +930,7 @@
                                 var scaleMode = getSetting('scale', _options);
                                 var center = getSetting('center', _options);
 
-                                if (scaleMode === "cover" || scaleMode === "fit") {
+                                if (scaleMode === "cover" || scaleMode === "contain") {
                                     iElement.css('background-size', scaleMode);
                                 }
 
@@ -948,7 +948,7 @@
                         var center = getSetting('center', _options);
 
                         // TODO allow other methods to select the parent
-                        if (scaleMode === "cover" || scaleMode === "fit" || center === true) {
+                        if (scaleMode === "cover" || scaleMode === "contain" || center === true) {
 
                             var container = getSetting('container', _options);
 
@@ -1050,7 +1050,7 @@
         };
         var ratio = targetW / targetH;
 
-        if (mode === "fit") {
+        if (mode === "contain") {
             if (containerH / containerW > targetH / targetW) {
                 props = {
                     width: containerW,
