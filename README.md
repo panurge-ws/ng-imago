@@ -301,6 +301,8 @@ loaded_class: "ng-imago-loaded",
 loading_class: "ng-imago-loading",
 // The name of the class added to the image when an error has occurred
 error_class: "ng-imago-error",
+// set the loading/loaded/error class also on parent (if exists)
+parent_classes: true
 
 // auto-size
 // Scale mode
