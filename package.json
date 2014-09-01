@@ -1,7 +1,7 @@
 {
   "name": "ng-imago",
   "description": "An angular module to manage iimages s.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/panurge-ws/ng-imago",
   "author": {
     "name": "Panurge Web Studio",
