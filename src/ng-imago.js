@@ -173,6 +173,17 @@
                     return false;
                 }
 
+                if (getSetting( 'avoid_cache', options ) === true){
+                    
+                    if (source.indexOf('?') > -1){
+                        source += "&c=" + ( Math.random() * 100000 ).toString();
+                    }
+                    else{
+                        source += "?c=" + ( Math.random() * 100000 ).toString();
+                    }
+                    
+                }
+                
                 return source;
             };
 
@@ -853,18 +864,13 @@
                             $scope.loaded = false;
 
 
-                            setSource( $scope.options.source_to_set, _getSetting( 'avoid_cache' ) );
+                            setSource( $scope.options.source_to_set);
 
                         }
 
-                        function setSource( source_to_set, avoid_cache ) {
+                        function setSource( source_to_set ) {
 
-                            var src = source_to_set;
-                            if ( avoid_cache ) {
-                                src += "?c=" + ( Math.random() * 100000 ).toString();
-                            }
-
-                            _image.attr( "src", src );
+                            _image.attr( "src", source_to_set );
 
                         }
 
