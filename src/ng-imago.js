@@ -174,7 +174,7 @@
                 }
 
                 if (getSetting( 'avoid_cache', options ) === true){
-                    
+
                     if (source.indexOf('?') > -1){
                         source += "&c=" + ( Math.random() * 100000 ).toString();
                     }
@@ -258,7 +258,7 @@
             };
 
             ngImagoAttributeParser.mediaQueryHandler = function( mq ) {
-                $rootScope.$broadcast( EVENT_MEDIA_QUERY_CHANGED );
+                $rootScope.$broadcast( EVENT_MEDIA_QUERY_CHANGED, mq );
             };
 
             var _addMediaQuery = function( query ) {
