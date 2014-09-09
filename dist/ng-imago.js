@@ -1,4 +1,4 @@
-/*! ng-imago - v0.1.1 - 2014-09-03
+/*! ng-imago - v0.1.1 - 2014-09-09
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
@@ -302,10 +302,14 @@
                     angular.forEach( _images_split, function( img ) {
                         if ( ngImagoAttributeParser.isRetina === true && img.indexOf( '@2x' ) > -1 ) {
                             _outUrl = img;
-                        } else if ( ngImagoAttributeParser.isRetina === false ) {
+                        } else if ( ngImagoAttributeParser.isRetina === false && img.indexOf( '@2x' ) === -1) {
                             _outUrl = img;
                         }
                     } );
+                    // safly catch the first one
+                    if (_outUrl === ''){
+                        _outUrl = _images_split[0];
+                    }
                 } else {
                     _outUrl = imageUrl;
                 }

@@ -307,10 +307,14 @@
                     angular.forEach( _images_split, function( img ) {
                         if ( ngImagoAttributeParser.isRetina === true && img.indexOf( '@2x' ) > -1 ) {
                             _outUrl = img;
-                        } else if ( ngImagoAttributeParser.isRetina === false ) {
+                        } else if ( ngImagoAttributeParser.isRetina === false && img.indexOf( '@2x' ) === -1) {
                             _outUrl = img;
                         }
                     } );
+                    // safly catch the first one
+                    if (_outUrl === ''){
+                        _outUrl = _images_split[0];
+                    }
                 } else {
                     _outUrl = imageUrl;
                 }
