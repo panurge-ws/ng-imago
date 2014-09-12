@@ -1,4 +1,4 @@
-/*! ng-imago - v0.1.1 - 2014-09-09
+/*! ng-imago - v0.1.1 - 2014-09-12
 * https://github.com/panurge-ws/ng-imago
 * Copyright (c) 2014 Panurge Web Studio; Licensed MIT */
 /*global window */
@@ -164,7 +164,7 @@
                 var source = ngImagoAttributeParser.getUrlForSources( sources, options );
 
                 if ( source === "" ) {
-                    $log.error( "[ngImagoModule] -> no-url-for-image", sources );
+                    $log.warn( "[ngImagoModule] -> no-url-for-image", sources );
                     return false;
                 }
 
@@ -919,7 +919,13 @@
                                     $scope.sourcesSet[ default_sizes[ i ].attr ] = nv[ i + 1 ];
                                 }
                             }
-
+   
+                            // do nothing if still undefined or empty
+                            if (angular.isUndefined($scope.sourcesSet) || Object.keys($scope.sourcesSet).length === 0)
+                            {
+                                return;
+                            }
+                            
                             if ( $scope.initialized ) {
                                 // TODO remove from queue old url
                                 startLoadImage( true, $scope.options.auto_load || $scope.loaded );
